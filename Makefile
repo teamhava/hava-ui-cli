@@ -3,6 +3,7 @@
 # Adds in some build flags to identify the binary in the future
 build-local:
 	go build -v \
+	-o hava \
 	-ldflags="\
 	-X 'github.com/teamhava/hava-ui-cli/version.Version=0.0.0' \
 	-X 'github.com/teamhava/hava-ui-cli/version.Prerelease=alpha' \
