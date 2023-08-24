@@ -1,0 +1,133 @@
+name: GitHub Actions Hava CLI Example
+
+on:
+  workflow_dispatch:
+    inputs:
+      hava_version:
+        description: 'General Comments'
+        required: false
+        default: "0.0.5-pre-alpha"
+
+jobs:
+  Hava_CLI_Test:
+    runs-on: ubuntu-latest
+    env: 
+      HAVA_TOKEN: ${{ secrets.HAVA_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_CROSS_ACCOUNT_ROLE: ${{ secrets.AWS_CROSS_ACCOUNT_ROLE }}
+      HAVA_AWS_SOURCE_NAME: ${{ vars.HAVA_AWS_SOURCE_NAME }}
+      HAVA_AWSCAR_SOURCE_NAME: ${{ vars.HAVA_AWSCAR_SOURCE_NAME }}
+      HAVA_AZURE_SOURCE_NAME: ${{ vars.HAVA_AZURE_SOURCE_NAME }}
+      HAVA_GCP_SOURCE_NAME: ${{ vars.HAVA_GCP_SOURCE_NAME }}
+      GCP_ENCODED_FILE: ${{ secrets.GCP_ENCODED_FILE }}
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_SECRET_TEXT: ${{ secrets.ARM_SECRET_TEXT }}
+      AUTOMATION: 1
+
+    steps:
+
+
+      - name: Install hava binary
+        run: |
+          version=${{ github.event.inputs.version }}
+          curl -L -o hava "https://github.com/teamhava/hava-ui-cli/releases/download/${version}/hava-linux-amd64"
+          chmod +x hava
+
+
+      - name: Print version
+        run: ./hava --version
+
+      - name: Create Source AWS (Using Access Keys)
+        run: ./hava source create aws --name $HAVA_AWS_SOURCE_NAME --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY
+
+      - name: List ALL sources
+        run: ./hava source list
+
+      - name: Get AWS source ID
+        id: awsSourceID
+        run: |
+          AWS_SOURCE_ID=$(./hava source list --json  | jq  -r '.[] | select(.Name==env.HAVA_AWS_SOURCE_NAME) | .Id')
+          echo "AWS_SOURCE_ID=$AWS_SOURCE_ID" >> $GITHUB_ENV
+  
+      - name: List specific source
+        run: ./hava source list --source-id $AWS_SOURCE_ID
+  
+  
+      - name: Create Source AWS (Using Cross Account Roles)
+        run: ./hava source create aws --name $HAVA_AWSCAR_SOURCE_NAME --role-arn $AWS_CROSS_ACCOUNT_ROLE
+
+      - name: Create Source GCP
+        run: ./hava source create gcp  --name $HAVA_GCP_SOURCE_NAME --config-file $GCP_ENCODED_FILE
+
+      - name: Create Source Azure
+        run: ./hava source create azure --name $HAVA_AZURE_SOURCE_NAME --client-id $ARM_CLIENT_ID --tenant-id $ARM_TENANT_ID --subscription-id $ARM_SUBSCRIPTION_ID --secret-key $ARM_SECRET_TEXT
+
+      - name: List ALL sources
+        run: ./hava source list
+
+      - name: List ALL sources (Markdown)
+        run: |
+          STEP_SUMMARY=$(./hava source list --markdown)
+          echo "### List ALL sources (Markdown) :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "$STEP_SUMMARY" >> $GITHUB_STEP_SUMMARY
+          echo "$STEP_SUMMARY"
+
+      - name: List ALL sources (HTML)
+        run: |
+          STEP_SUMMARY=$(./hava source list --html)
+          echo "### List ALL sources (HTML) :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "$STEP_SUMMARY" >> $GITHUB_STEP_SUMMARY
+          echo "$STEP_SUMMARY"
+
+      - name: List ALL sources (JSON OUTPUT)
+        run: ./hava source list --json | jq
+
+      - name: Get GCP source ID
+        id: gcpSourceID
+        run: |
+          GCP_SOURCE_ID=$(./hava source list --json  | jq -r '.[] | select(.Name==env.HAVA_GCP_SOURCE_NAME) | .Id')
+          echo "GCP_SOURCE_ID=$GCP_SOURCE_ID" >> $GITHUB_ENV
+      
+      - name: Get Azure source ID
+        id: azureSourceID
+        run: |
+          AZURE_SOURCE_ID=$(./hava source list --json  | jq -r '.[] | select(.Name==env.HAVA_AZURE_SOURCE_NAME) | .Id')
+          echo "AZURE_SOURCE_ID=$AZURE_SOURCE_ID" >> $GITHUB_ENV
+
+      - name: Get AWS CAR source ID
+        id: awsCarSourceID
+        run: |
+          AWSCAR_SOURCE_ID=$(./hava source list --json  | jq -r '.[] | select(.Name==env.HAVA_AWSCAR_SOURCE_NAME) | .Id')
+          echo "AWSCAR_SOURCE_ID=$AWSCAR_SOURCE_ID" >> $GITHUB_ENV
+      
+      - name: Update GCP Source
+        run: ./hava source update gcp --name GCPDevChange --source-id $GCP_SOURCE_ID
+
+      - name: Quick Pause to review
+        run: sleep 30s
+
+      - name: Sync AWS Source
+        run: ./hava source sync $AWS_SOURCE_ID
+
+      - name: List ALL sources
+        run: ./hava source list
+
+      - name: Delete AWS Keys Source
+        run: ./hava source delete $AWS_SOURCE_ID --autoapprove
+      
+      - name: Delete AWS CAR Source
+        run: ./hava source delete $AWSCAR_SOURCE_ID --autoapprove
+
+      - name: Delete GCP Source
+        run: ./hava source delete $GCP_SOURCE_ID --autoapprove
+
+      - name: Delete AZURE Source
+        run: ./hava source delete $AZURE_SOURCE_ID --autoapprove
+
+      - name: List ALL sources
+        run: ./hava source list
+
+
