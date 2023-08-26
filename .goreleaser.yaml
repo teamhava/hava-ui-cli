@@ -16,7 +16,10 @@ builds:
       - windows
       - darwin
     ldflags: 
-      - -X github.com/teamhava/hava/version.Version={{.Version}} -X github.com/teamhava/hava/version.Build={{.Tag}} -X github.com/teamhava/hava/version.BuiltBy=github -X github.com/teamhava/hava/version.Date={{.Date}}
+      - -X github.com/teamhava/hava/version.Version={{.Version}} 
+      - -X github.com/teamhava/hava/version.Build={{.Tag}} 
+      - -X github.com/teamhava/hava/version.BuiltBy=goreleaser 
+      - -X github.com/teamhava/hava/version.Date={{.Date}}
     hooks:
       post:
         # The binary is signed and notarized when running a production release, but for snapshot builds notarization is
