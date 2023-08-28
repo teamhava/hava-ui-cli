@@ -18,6 +18,7 @@ This tool is a CLI driven binary to interface with the Hava API/SaaS platform. T
     - [Sync Sources](#sync-sources)
     - [Delete Sources](#delete-sources)
     - [CLI Completion Setup](#cli-completion-setup)
+    - [CLI Interactive Config Setup](#cli-interactive-config-setup)
   - [Pre-Requisites](#pre-requisites)
     - [Environment Variable](#environment-variable)
     - [Configuration File](#configuration-file)
@@ -52,7 +53,7 @@ Specific [OS (Linux|OSX|Windows) installation here](./docs/installation.md).
 
 ### Print hava CLI help
 
-[![asciicast](https://asciinema.org/a/604382.svg)](https://asciinema.org/a/604382)
+![print help](./docs/images/hava_help.cast.gif)
 
 
 `hava -h`
@@ -81,23 +82,28 @@ Use "hava [command] --help" for more information about a command.
 
 ### Create and List Sources
 
-[![asciicast](https://asciinema.org/a/604383.svg)](https://asciinema.org/a/604383)
+![hava_create_list](./docs/images/hava_create_list_sources.cast.gif)
 
 ### CLI JSON Output
 
-[![asciicast](https://asciinema.org/a/604384.svg)](https://asciinema.org/a/604384)
+![hava_json_out](./docs/images/hava_CLI_json_output.cast.gif)
+
 
 ### Sync Sources
 
-[![asciicast](https://asciinema.org/a/604386.svg)](https://asciinema.org/a/604386)
+![hava_print_source](./docs/images/hava_source_sync.cast.gif)
 
 ### Delete Sources
 
-[![asciicast](https://asciinema.org/a/604389.svg)](https://asciinema.org/a/604389)
+![hava_delete_sources](./docs/images/hava_source_delete.cast.gif)
 
 ### CLI Completion Setup
 
-[![asciicast](https://asciinema.org/a/604388.svg)](https://asciinema.org/a/604388)
+![hava_cli_completion](./docs/images/hava_cli_completion.cast.gif)
+
+### CLI Interactive Config Setup
+
+![hava_config_setup](./docs/images/hava_config_setup.cast.gif)
 
 ## Pre-Requisites
 
