@@ -1,4 +1,4 @@
-name: Hava binary release
+name: test flow
 
 on:
   workflow_dispatch:
