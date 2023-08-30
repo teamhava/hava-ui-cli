@@ -26,9 +26,7 @@ jobs:
 
       - 
         name: Install gon
-        run: |
-          go get github.com/mitchellh/gon 
-          go install github.com/mitchellh/gon 
+        run: go install github.com/mitchellh/gon 
 
       -
         name: Run GoReleaser
