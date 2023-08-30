@@ -23,7 +23,13 @@ jobs:
       -
         name: Set up Go
         uses: actions/setup-go@v4
-        
+
+      - 
+        name: Install gon
+        run: |
+          go get github.com/mitchellh/gon 
+          go install github.com/mitchellh/gon 
+
       -
         name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
