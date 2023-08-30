@@ -25,13 +25,6 @@ jobs:
       - 
         name: Install gon
         run: |
-          go env
-          export GOPATH=$(go env GOPATH)
-          echo "gopath: ${GOPATH}/bin"
-          echo "path: ${PATH}"
-          ls $(go env GOPATH)
-          ls $(go env GOPATH)/bin
-          go get github.com/mitchellh/gon 
-          go install github.com/mitchellh/gon
-          ls $(go env GOPATH)/bin
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          brew install mitchellh/gon/gon
           gon -v
