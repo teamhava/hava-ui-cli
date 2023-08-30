@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       hava_version:
-        description: 'Hava Binary Version'
-        required: true
-        default: "0.0.2-beta"
+        description: 'General Comments'
+        required: false
+        default: "0.0.1"
 
 jobs:
   Hava_CLI_Test:
@@ -32,7 +32,7 @@ jobs:
 
       - name: Install hava binary
         run: |
-          curl -L -o hava.tar.gz "https://github.com/teamhava/hava/releases/download/${{ github.event.inputs.hava_version }}/hava_Linux_x86_64.tar.gz"
+          curl -L -o hava.tar.gz "https://github.com/teamhava/hava-ui-cli/releases/download/${{ github.event.inputs.hava_version }}/hava_Linux_x86_64.tar.gz"
           tar xzvf hava.tar.gz
           chmod +x hava
 
