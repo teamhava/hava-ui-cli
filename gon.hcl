@@ -13,3 +13,7 @@ apple_id {
 sign {
   application_identity = "Developer ID Application: Thomas Winsnes"
 }
+
+zip {
+  output_path = "hava.zip"
+}
