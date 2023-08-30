@@ -27,7 +27,7 @@ jobs:
         run: |
           # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           # brew install mitchellh/gon/gon
-          curl -o gon.zip https://github.com/mitchellh/gon/releases/download/v0.2.5/gon_macos.zip
+          curl -L -o gon.zip https://github.com/mitchellh/gon/releases/download/v0.2.5/gon_macos.zip
           echo "-----"
           ls
           echo "-----"
