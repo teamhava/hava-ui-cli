@@ -31,6 +31,7 @@ jobs:
           echo "path: ${PATH}"
           ls $(go env GOPATH)
           ls $(go env GOPATH)/bin
-          go get github.com/mitchellh/gon
+          go get github.com/mitchellh/gon 
+          go install github.com/mitchellh/gon
           ls $(go env GOPATH)/bin
           gon -v
