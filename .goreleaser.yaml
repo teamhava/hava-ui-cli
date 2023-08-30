@@ -31,8 +31,8 @@ builds:
       - -X github.com/teamhava/hava/version.Build={{.Tag}} 
       - -X github.com/teamhava/hava/version.BuiltBy=goreleaser 
       - -X github.com/teamhava/hava/version.Date={{.Date}}
-    hooks:
-      post: gon gon.hcl
+    # hooks:
+    #   post: gon gon.hcl
 
 
 dockers:

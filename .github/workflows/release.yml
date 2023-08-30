@@ -12,7 +12,7 @@ jobs:
   goreleaser:
     runs-on: macos-latest
     env:
-      APPLE_USERNANME: ${{ secrets.APPLE_USERNANME }}
+      APPLE_USERNAME: ${{ secrets.APPLE_USERNAME }}
       APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
     steps:
       -
@@ -43,3 +43,7 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      -
+        name: Sign binary with gon
+        run: gon gon.hcl
