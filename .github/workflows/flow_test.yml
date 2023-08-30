@@ -32,4 +32,5 @@ jobs:
           ls $(go env GOPATH)
           ls $(go env GOPATH)/bin
           go get github.com/mitchellh/gon
+          ls $(go env GOPATH)/bin
           gon -v
