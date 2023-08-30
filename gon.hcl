@@ -5,10 +5,10 @@
 source = ["./dist/hava-macos_darwin_amd64_v1/hava", "./dist/hava-macos_darwin_arm64/hava"]
 bundle_id = "io.hava.cli"
 
-apple_id {
-  username = "@env:APPLE_USERNAME"
-  password = "@env:APPLE_PASSWORD"
-}
+// set using env vars
+// apple_id {
+//   password = "@env:AC_PASSWORD"
+// }
 
 sign {
   application_identity = "Developer ID Application: Thomas Winsnes"

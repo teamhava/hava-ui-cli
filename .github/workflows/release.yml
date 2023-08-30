@@ -12,8 +12,8 @@ jobs:
   goreleaser:
     runs-on: macos-latest
     env:
-      APPLE_USERNAME: ${{ secrets.APPLE_USERNAME }}
-      APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+      AC_USERNAME: ${{ secrets.APPLE_USERNAME }}
+      AC_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
     steps:
       - 
         name: Install the Apple certificate and provisioning profile
