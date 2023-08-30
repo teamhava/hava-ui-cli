@@ -73,4 +73,6 @@ jobs:
 
       -
         name: Sign binary with gon
-        run: gon gon.hcl
+        run: |
+          ls -lh ./dist/
+          gon -log-level=info gon.hcl

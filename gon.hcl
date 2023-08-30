@@ -11,5 +11,5 @@ apple_id {
 }
 
 sign {
-  application_identity = "Developer ID Installer: Thomas Winsnes (WB8X3342BR)"
+  application_identity = "Developer ID Installer: Thomas Winsnes"
 }
