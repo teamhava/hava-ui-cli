@@ -9,11 +9,22 @@ before:
     - go generate ./...
 builds:
   - binary: hava
+    id: hava
     env:
       - CGO_ENABLED=0
     goos:
       - linux
       - windows
+    ldflags: 
+      - -X github.com/teamhava/hava/version.Version={{.Version}} 
+      - -X github.com/teamhava/hava/version.Build={{.Tag}} 
+      - -X github.com/teamhava/hava/version.BuiltBy=goreleaser 
+      - -X github.com/teamhava/hava/version.Date={{.Date}}
+  - binary: hava
+    id: hava-macos
+    env:
+      - CGO_ENABLED=0
+    goos:
       - darwin
     ldflags: 
       - -X github.com/teamhava/hava/version.Version={{.Version}} 
@@ -21,15 +32,8 @@ builds:
       - -X github.com/teamhava/hava/version.BuiltBy=goreleaser 
       - -X github.com/teamhava/hava/version.Date={{.Date}}
     hooks:
-      post:
-        # The binary is signed and notarized when running a production release, but for snapshot builds notarization is
-        # skipped and only ad-hoc signing is performed (not cryptographic material is needed).
-        #
-        # note: environment variables required for signing and notarization (set in CI) but are not needed for snapshot builds
-        #    QUILL_SIGN_P12, QUILL_SIGN_PASSWORD, QUILL_NOTARY_KEY, QUILL_NOTARY_KEY_ID, QUILL_NOTARY_ISSUER
-        - cmd: quill sign-and-notarize "{{ .Path }}" --dry-run={{ .IsSnapshot }} --ad-hoc={{ .IsSnapshot }} -vv
-          env:
-            - QUILL_LOG_FILE=/tmp/quill-{{ .Target }}.log
+      post: gon gon.hcl
+
 
 dockers:
   - image_templates:
