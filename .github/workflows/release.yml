@@ -1,84 +1,42 @@
-name: Release hava cli
+name: Hava binary release
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'hava version number'
-        required: true
-        default: ''
-      changes:
-        type: string
-        description: 'hava changes/features in this release'
-        required: true
-        default: ''
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: write
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  goreleaser:
+    runs-on: macos-latest
+    env:
+      APPLE_USERNANME: ${{ secrets.APPLE_USERNANME }}
+      APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
     steps:
-      - name: Checkout code
+      -
+        name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Install Go
+      -
+        name: Set up Go
         uses: actions/setup-go@v4
+
+      - 
+        name: Install gon
+        run: |
+          go get github.com/mitchellh/gon 
+          go install github.com/mitchellh/gon 
+
+      -
+        name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v4
         with:
-          go-version: 1.20.7
-
-      - name: Install gox
-        run: |
-          go get github.com/mitchellh/gox 
-          go install github.com/mitchellh/gox 
-
-      - name: Install zip
-        run: |
-          sudo apt-get update -q
-          sudo apt-get install zip -q
-
-      - name: Cross compile
-        run: |
-          gox \
-            -os="linux darwin windows" \
-            -ldflags="-X 'github.com/teamhava/hava-ui-cli/version.Version=${{ github.event.inputs.version }}' -X 'github.com/teamhava/hava-ui-cli/version.Build=${{ github.sha }}' -X 'github.com/teamhava/hava-ui-cli/version.Date=$(date)' -X 'github.com/teamhava/hava-ui-cli/version.BuiltBy=github'" \
-            -arch="amd64 arm64" \
-            -output "./pkg/hava-{{.OS}}-{{.Arch}}" \
-            .
-
-      - name: Print version
-        run: ./pkg/hava-linux-amd64 --version
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: hava-artifacts
-          path: ./pkg/*     
+          # either 'goreleaser' (default) or 'goreleaser-pro'
+          distribution: goreleaser
+          version: ${{ env.GITHUB_REF_NAME }}
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update Changelog
-        uses: stefanzweifel/changelog-updater-action@v1
-        with:
-          latest-version: ${{ github.event.inputs.version }}
-          release-notes: ${{ github.event.inputs.changes }}
-
-      - name: Commit updated CHANGELOG
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          branch: main
-          commit_message: Update CHANGELOG [release workflow]
-          file_pattern: CHANGELOG.md
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.event.inputs.version }}
-          body: ${{ github.event.inputs.changes }}
-          files: |
-            ./pkg/hava-darwin-amd64
-            ./pkg/hava-darwin-arm64
-            ./pkg/hava-linux-amd64
-            ./pkg/hava-windows-amd64.exe
-
-      
-

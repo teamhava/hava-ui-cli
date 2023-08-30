@@ -8,7 +8,7 @@
 *.so
 *.dylib
 *.env
-*.yaml
+.hava.yaml
 
 # Test binary, built with `go test -c`
 *.test
@@ -26,3 +26,4 @@ go.work
 # hava binary
 hava
 hava-ui-cli
+dist/
