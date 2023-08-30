@@ -28,9 +28,7 @@ jobs:
           # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           # brew install mitchellh/gon/gon
           curl -L -o gon.zip https://github.com/mitchellh/gon/releases/download/v0.2.5/gon_macos.zip
-          echo "-----"
-          ls
-          echo "-----"
           unzip gon.zip
+          rm gon.zip
           mv gon $(go env GOPATH)/bin/gon
           gon -v
