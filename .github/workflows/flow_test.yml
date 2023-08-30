@@ -25,6 +25,7 @@ jobs:
       - 
         name: Install gon
         run: |
+          go env
           echo "gopath: ${GOPATH}/bin"
           echo "path: ${PATH}"
           go get github.com/mitchellh/gon
