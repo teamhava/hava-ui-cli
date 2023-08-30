@@ -1,0 +1,29 @@
+name: Hava binary release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  goreleaser:
+    runs-on: macos-latest
+    env:
+      APPLE_USERNANME: ${{ secrets.APPLE_USERNANME }}
+      APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      -
+        name: Set up Go
+        uses: actions/setup-go@v4
+
+      - 
+        name: Install gon
+        run: |
+          go get github.com/mitchellh/gon
+          gon -v
