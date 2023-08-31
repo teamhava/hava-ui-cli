@@ -64,7 +64,12 @@ jobs:
 
           security find-identity -v
 
+
+          echo "List Files"
+          ls -lh ./dist/
+
           # Sign binaries
+          echo "Signing binaries"
           codesign --force -s "$MACOS_CERTIFICATE_NAME" -v "./${DIST_FILE_ARM64}" --options=runtime --timestamp
           codesign --force -s "$MACOS_CERTIFICATE_NAME" -v "./${DIST_FILE_AMD4}" --options=runtime --timestamp
 
