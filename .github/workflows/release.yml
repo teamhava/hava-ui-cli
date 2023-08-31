@@ -11,17 +11,38 @@ permissions:
 jobs:
   goreleaser:
     runs-on: macos-latest
-    env:
-      AC_USERNAME: ${{ secrets.APPLE_USERNAME }}
-      AC_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
     steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      -
+        name: Set up Go
+        uses: actions/setup-go@v4
+
+      -
+        name: Build Binaries
+        uses: goreleaser/goreleaser-action@v4
+        with:
+          # either 'goreleaser' (default) or 'goreleaser-pro'
+          distribution: goreleaser
+          version: ${{ env.GITHUB_REF_NAME }}
+          args: build --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - 
-        name: Install the Apple certificate and provisioning profile
+        name: Apple certificate, provisioning profile, sign binary, notorize
         env:
           BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
           P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
-          # BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          AC_USERNAME: ${{ secrets.APPLE_USERNAME }}
+          AC_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          AC_TEAMID: ${{ secrets.AC_TEAMID }}
+          DIST_FILE_ARM64: dist/hava-macos_darwin_arm64/hava
+          DIST_FILE_AMD64: dist/hava-macos_darwin_amd64_v1/hava
         run: |
           # create variables
           CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
@@ -42,37 +63,46 @@ jobs:
           security list-keychain -d user -s $KEYCHAIN_PATH
 
           security find-identity -v
-      -
-        name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      -
-        name: Set up Go
-        uses: actions/setup-go@v4
 
-      - 
-        name: Install gon
-        run: |
-          curl -L -o gon.zip https://github.com/mitchellh/gon/releases/download/v0.2.5/gon_macos.zip
-          unzip gon.zip
-          rm gon.zip
-          mv gon $(go env GOPATH)/bin/gon
-          gon -v
+          # Sign binaries
+          codesign --force -s "$MACOS_CERTIFICATE_NAME" -v "./${DIST_FILE_ARM64}" --options=runtime --timestamp
+          codesign --force -s "$MACOS_CERTIFICATE_NAME" -v "./${DIST_FILE_AMD4}" --options=runtime --timestamp
+
+          # Notarize
+          # Store the notarization credentials so that we can prevent a UI password dialog from blocking the CI
+
+          echo "Create keychain profile"
+          xcrun notarytool store-credentials "notarytool-profile" --apple-id "$AC_USERNAME" --team-id "$AC_TEAMID" --password "$AC_PASSWORD"
+
+          # We can't notarize an app bundle directly, but we need to compress it as an archive.
+          # Therefore, we create a zip file containing our app bundle, so that we can send it to the
+          # notarization service
+
+
+          # Notarize insider binary
+          echo "Creating temp notarization archive for insider build"
+          ditto -c -k --keepParent "./${DIST_FILE_ARM64}" "./${DIST_FILE_ARM64}--macos-x64--${{ github.sha }}.zip"
+          ditto -c -k --keepParent "./${DIST_FILE_AMD4}" "./${DIST_FILE_AMD4}--macos-x64--${{ github.sha }}.zip"
+
+          # Here we send the notarization request to the Apple's Notarization service, waiting for the result.
+          # This typically takes a few seconds inside a CI environment, but it might take more depending on the App
+          # characteristics. Visit the Notarization docs for more information and strategies on how to optimize it if
+          # you're curious
+          echo "Notarize insider app"
+          xcrun notarytool submit "./${DIST_FILE_ARM64}--macos-x64--${{ github.sha }}.zip" --keychain-profile "notarytool-profile" --wait
+          xcrun notarytool submit "./${DIST_FILE_AMD4}--macos-x64--${{ github.sha }}.zip" --keychain-profile "notarytool-profile" --wait
+
+          # Delete build keychain
+          security delete-keychain build.keychain
+
 
       -
-        name: Run GoReleaser
+        name: Release Binaries
         uses: goreleaser/goreleaser-action@v4
         with:
           # either 'goreleaser' (default) or 'goreleaser-pro'
           distribution: goreleaser
           version: ${{ env.GITHUB_REF_NAME }}
-          args: release --clean
+          args: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      -
-        name: Sign binary with gon
-        run: |
-          ls -lh ./dist/
-          gon -log-level=info gon.hcl

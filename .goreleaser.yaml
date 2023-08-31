@@ -15,25 +15,12 @@ builds:
     goos:
       - linux
       - windows
-    ldflags: 
-      - -X github.com/teamhava/hava/version.Version={{.Version}} 
-      - -X github.com/teamhava/hava/version.Build={{.Tag}} 
-      - -X github.com/teamhava/hava/version.BuiltBy=goreleaser 
-      - -X github.com/teamhava/hava/version.Date={{.Date}}
-  - binary: hava
-    id: hava-macos
-    env:
-      - CGO_ENABLED=0
-    goos:
       - darwin
     ldflags: 
       - -X github.com/teamhava/hava/version.Version={{.Version}} 
       - -X github.com/teamhava/hava/version.Build={{.Tag}} 
       - -X github.com/teamhava/hava/version.BuiltBy=goreleaser 
       - -X github.com/teamhava/hava/version.Date={{.Date}}
-    # hooks:
-    #   post: gon gon.hcl
-
 
 # dockers:
 #   - image_templates:
