@@ -20,17 +20,25 @@ jobs:
       -
         name: Set up Go
         uses: actions/setup-go@v4
+        with:
+          go-version: '1.20.7'
 
       -
         name: Build Release
         uses: goreleaser/goreleaser-action@v4
         with:
-          # either 'goreleaser' (default) or 'goreleaser-pro'
           distribution: goreleaser
           version: ${{ env.GITHUB_REF_NAME }}
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      -
+        name: Upload assets
+        uses: actions/upload-artifact@v3
+        with:
+          name: myhavaapp
+          path: ./dist/*
 
       - 
         name: Apple certificate, provisioning profile, sign binary, notorize
@@ -96,6 +104,17 @@ jobs:
 
           # Delete build keychain
           security delete-keychain $KEYCHAIN_PATH
+
+      -
+        name: Upload Binary
+        env:
+          DIST_FILE_UNIVERSAL: dist/hava_darwin_all/hava
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses:  actions/upload-artifact@v3
+        with:
+          name: hava-binaries
+          path: |
+            ./dist/*
 
 
 
