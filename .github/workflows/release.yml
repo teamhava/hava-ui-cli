@@ -41,6 +41,7 @@ jobs:
           AC_USERNAME: ${{ secrets.APPLE_USERNAME }}
           AC_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           AC_TEAMID: ${{ secrets.AC_TEAMID }}
+          MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
           DIST_FILE_ARM64: dist/hava-macos_darwin_arm64/hava
           DIST_FILE_AMD64: dist/hava-macos_darwin_amd64_v1/hava
         run: |
