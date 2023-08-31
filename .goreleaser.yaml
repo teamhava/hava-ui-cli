@@ -12,26 +12,35 @@ builds:
     id: hava
     env:
       - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    goamd64:
+      - v1
     ldflags: 
       - -X github.com/teamhava/hava/version.Version={{.Version}} 
       - -X github.com/teamhava/hava/version.Build={{.Tag}} 
       - -X github.com/teamhava/hava/version.BuiltBy=goreleaser 
       - -X github.com/teamhava/hava/version.Date={{.Date}}
-    ignore:
-      - goos: linux
-        goarch: 386
-      - goos: windows
-        goarch: 386
-    targets:
-      # Since: v1.9
-      - go_first_class
-      # Since: v1.9
-      - go_118_first_class
-      - linux_amd64_v1
-      - darwin_arm64
-      - linux_arm_6
+  - binary: hava
+    id: macos
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+    ldflags: 
+      - -X github.com/teamhava/hava/version.Version={{.Version}} 
+      - -X github.com/teamhava/hava/version.Build={{.Tag}} 
+      - -X github.com/teamhava/hava/version.BuiltBy=goreleaser 
+      - -X github.com/teamhava/hava/version.Date={{.Date}}
+    
 universal_binaries:
-  - replace: true
+  - ids:
+      - macos 
+    replace: true
 
 
 # dockers:

@@ -22,13 +22,13 @@ jobs:
         uses: actions/setup-go@v4
 
       -
-        name: Build Binaries
+        name: Build Release
         uses: goreleaser/goreleaser-action@v4
         with:
           # either 'goreleaser' (default) or 'goreleaser-pro'
           distribution: goreleaser
           version: ${{ env.GITHUB_REF_NAME }}
-          args: build --clean
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -42,7 +42,7 @@ jobs:
           AC_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           AC_TEAMID: ${{ secrets.AC_TEAMID }}
           MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
-          DIST_FILE_ARM64: dist/hava_darwin_all/hava
+          DIST_FILE_UNIVERSAL: dist/hava_darwin_all/hava
         run: |
           # create variables
           CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
@@ -70,7 +70,7 @@ jobs:
 
           # Sign binaries
           echo "Signing binaries"
-          codesign --force -s "$MACOS_CERTIFICATE_NAME" -v "./${DIST_FILE_ARM64}" --options=runtime --timestamp
+          codesign --force -s "$MACOS_CERTIFICATE_NAME" -v "./${DIST_FILE_UNIVERSAL}" --options=runtime --timestamp
 
           # Notarize
           # Store the notarization credentials so that we can prevent a UI password dialog from blocking the CI
@@ -85,26 +85,17 @@ jobs:
 
           # Notarize insider binary
           echo "Creating temp notarization archive for insider build"
-          ditto -c -k --keepParent "./${DIST_FILE_ARM64}" "./${DIST_FILE_ARM64}--macos-x64--${{ github.sha }}.zip"
+          ditto -c -k --keepParent "./${DIST_FILE_UNIVERSAL}" "./${DIST_FILE_UNIVERSAL}--macos-x64--${{ github.sha }}.zip"
 
           # Here we send the notarization request to the Apple's Notarization service, waiting for the result.
           # This typically takes a few seconds inside a CI environment, but it might take more depending on the App
           # characteristics. Visit the Notarization docs for more information and strategies on how to optimize it if
           # you're curious
           echo "Notarize insider app"
-          xcrun notarytool submit "./${DIST_FILE_ARM64}--macos-x64--${{ github.sha }}.zip" --keychain-profile "notarytool-profile" --wait
+          xcrun notarytool submit "./${DIST_FILE_UNIVERSAL}--macos-x64--${{ github.sha }}.zip" --keychain-profile "notarytool-profile" --wait
 
           # Delete build keychain
           security delete-keychain $KEYCHAIN_PATH
 
 
-      -
-        name: Release Binaries
-        uses: goreleaser/goreleaser-action@v4
-        with:
-          # either 'goreleaser' (default) or 'goreleaser-pro'
-          distribution: goreleaser
-          version: ${{ env.GITHUB_REF_NAME }}
-          args: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
