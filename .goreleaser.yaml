@@ -21,10 +21,10 @@ builds:
     goamd64:
       - v1
     ldflags: 
-      - -X github.com/teamhava/hava/version.Version={{.Version}} 
-      - -X github.com/teamhava/hava/version.Build={{.Tag}} 
-      - -X github.com/teamhava/hava/version.BuiltBy=goreleaser 
-      - -X github.com/teamhava/hava/version.Date={{.Date}}
+      - -X github.com/teamhava/hava-ui-cli/version.Version={{.Version}} 
+      - -X github.com/teamhava/hava-ui-cli/version.Build={{.Tag}} 
+      - -X github.com/teamhava/hava-ui-cli/version.BuiltBy=goreleaser 
+      - -X github.com/teamhava/hava-ui-cli/version.Date={{.Date}}
   - binary: hava
     id: macos
     env:
@@ -32,10 +32,10 @@ builds:
     goos:
       - darwin
     ldflags: 
-      - -X github.com/teamhava/hava/version.Version={{.Version}} 
-      - -X github.com/teamhava/hava/version.Build={{.Tag}} 
-      - -X github.com/teamhava/hava/version.BuiltBy=goreleaser 
-      - -X github.com/teamhava/hava/version.Date={{.Date}}
+      - -X github.com/teamhava/hava-ui-cli/version.Version={{.Version}} 
+      - -X github.com/teamhava/hava-ui-cli/version.Build={{.Tag}} 
+      - -X github.com/teamhava/hava-ui-cli/version.BuiltBy=goreleaser 
+      - -X github.com/teamhava/hava-ui-cli/version.Date={{.Date}}
     
 universal_binaries:
   - ids:
