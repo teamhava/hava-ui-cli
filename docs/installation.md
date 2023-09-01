@@ -3,36 +3,45 @@
 Binaries are created as part of a release, check out the [Release Page](https://github.com/teamhava/hava-ui-cli/releases) for the latest version.
 
 
-**MacOs Installation amd64**
+**MacOs Installation amd64 OR arm64**
 ```sh
 version="x.x.x"
-curl -L -o hava "https://github.com/teamhava/hava-ui-cli/releases/download/${version}/hava-darwin-amd64"
-chmod +x hava
+curl -L -o hava.zip "https://github.com/teamhava/hava-ui-cli/releases/download/${version}/hava_Darwin_all.zip"
+ditto -x -k hava.zip ./
 ```
 
-**MacOs Installation arm64**
+**MacOs Installation Homebrew**
 ```sh
-version="x.x.x"
-curl -L -o hava "https://github.com/teamhava/hava-ui-cli/releases/download/${version}/hava-darwin-arm64"
-chmod +x hava
+brew tap teamhava/hava
+brew install hava
 ```
 
-!!! note ""
-    Note: `hava` CLI is currently not developer-signed or notorised and you will run into an initial issue where `hava` is not allowed to run. Please follow "[safely open apps on your mac](https://support.apple.com/en-au/HT202491#:~:text=View%20the%20app%20security%20settings%20on%20your%20Mac&text=In%20System%20Preferences%2C%20click%20Security,%E2%80%9CAllow%20apps%20downloaded%20from.%E2%80%9D)" to allow `hava` to run
 
 **Linux Installation**
 ```sh
 version="x.x.x"
-curl -L -o hava "https://github.com/teamhava/hava-ui-cli/releases/download/${version}/hava-linux-amd64"
-chmod +x hava
+arch="arm64"
+curl -L -o hava.zip "https://github.com/teamhava/hava-ui-cli/releases/download/${version}/hava_Linux_${arch}.zip"
+unzip hava.zip
 ```
+Currently arch=["arm64, "x86_64"]
 
 **Windows Installation**
 ```sh
 version="x.x.x"
-curl -L -o hava.exe "https://github.com/teamhava/hava-ui-cli/releases/download/${version}/hava-windows-amd64"
+arch="x86_64"
+curl -L -o hava.exe "https://github.com/teamhava/hava-ui-cli/releases/download/${version}/hava_Windows_${arch}.zip"
+unzip hava.zip
 ```
+Currently arch=["arm64, "x86_64"]
 
+
+**Docker Container Installation**
+
+```sh
+docker pull hava/cli
+docker run --env HAVA_TOKEN hava/cli source list
+```
 
 
 ## Pre-Requisites

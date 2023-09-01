@@ -18,6 +18,7 @@ This tool is a CLI driven binary to interface with the Hava API/SaaS platform. T
     - [Sync Sources](#sync-sources)
     - [Delete Sources](#delete-sources)
     - [CLI Completion Setup](#cli-completion-setup)
+    - [CLI Interactive Config Setup](#cli-interactive-config-setup)
   - [Pre-Requisites](#pre-requisites)
     - [Environment Variable](#environment-variable)
     - [Configuration File](#configuration-file)
@@ -45,14 +46,14 @@ This tool is a CLI driven binary to interface with the Hava API/SaaS platform. T
 
 Binaries are created as part of a release, check out the [Release Page](https://github.com/teamhava/hava-ui-cli/releases) for the latest version.
 
-Specific [OS (Linux|OSX|Windows) installation here](./docs/installation.md). 
+Specific [OS (Linux|OSX|Windows|Docker) installation here](./docs/installation.md). 
 
 
 ## Usage
 
 ### Print hava CLI help
 
-[![asciicast](https://asciinema.org/a/604382.svg)](https://asciinema.org/a/604382)
+![print help](./docs/images/hava_help.cast.gif)
 
 
 `hava -h`
@@ -81,29 +82,34 @@ Use "hava [command] --help" for more information about a command.
 
 ### Create and List Sources
 
-[![asciicast](https://asciinema.org/a/604383.svg)](https://asciinema.org/a/604383)
+![hava_create_list](./docs/images/hava_create_list_sources.cast.gif)
 
 ### CLI JSON Output
 
-[![asciicast](https://asciinema.org/a/604384.svg)](https://asciinema.org/a/604384)
+![hava_json_out](./docs/images/hava_CLI_json_output.cast.gif)
+
 
 ### Sync Sources
 
-[![asciicast](https://asciinema.org/a/604386.svg)](https://asciinema.org/a/604386)
+![hava_print_source](./docs/images/hava_source_sync.cast.gif)
 
 ### Delete Sources
 
-[![asciicast](https://asciinema.org/a/604389.svg)](https://asciinema.org/a/604389)
+![hava_delete_sources](./docs/images/hava_source_delete.cast.gif)
 
 ### CLI Completion Setup
 
-[![asciicast](https://asciinema.org/a/604388.svg)](https://asciinema.org/a/604388)
+![hava_cli_completion](./docs/images/hava_cli_completion.cast.gif)
+
+### CLI Interactive Config Setup
+
+![hava_config_setup](./docs/images/hava_config_setup.cast.gif)
 
 ## Pre-Requisites
 
 ### Environment Variable
 
-`HAVA_TOKEN` (Required) and `HAVA_ENDPOINT` (Optional) to be set as an environment variable. This is the preferred method when working with the hava cli too. 
+`HAVA_TOKEN` (Required) and `HAVA_ENDPOINT` (Optional) to be set as an environment variable. This is the preferred method when working with the hava cli tool. 
 
 ### Configuration File
 
@@ -115,7 +121,7 @@ hava_token: <token from hava website> ## Required from https://app.hava.io/<acco
 hava_endpoint: https://havaapi.company.com ## Optional if using self hosted Hava platform, default https://api.hava.io
 ```
 
-`hava` CLI by default will look in the default locations for the configuration file.
+`hava` CLI by default will look in the default file paths for the configuration file.
 The config file can also be specified by using the `--config <filename>` flag as follows:
 
 ```bash
@@ -124,15 +130,17 @@ hava --config <location-to-config-file> source list
 
 ### Precedence
 
-`hava` CLI will use the following precedence when determining which item to take
+`hava` CLI will use the following precedence when determining which variables to utilise:
 
-- environmen variable
+- environment variable
 - config file
 - default
 
 ### Running in Automation/CICD
 
-When running `hava` CLI in automation or a CICD pipeline, export/set `AUTOMATION=1` as an environment variable or `automation: 1` in the config file.
+When running `hava` CLI in automation or a CICD pipeline, we recommend export/setting `AUTOMATION=1` as an environment variable or `automation: 1` in the config file.
+
+Some commands do require human inputs or can be bypassed with a flag (eg `--autoapprove`). 
 
 Checkout our [Github CLI Test workflow](./.github/workflows/cli-test.yml). 
 
@@ -168,7 +176,7 @@ Flags:
 ╭───┬─────────────┬──────────────────────────────────────┬──────────────────────┬────────────┬────────┬────────────────────╮
 │   │ DISPLAYNAME │ ID                                   │ INFO                 │ NAME       │ STATE  │ TYPE               │
 ├───┼─────────────┼──────────────────────────────────────┼──────────────────────┼────────────┼────────┼────────────────────┤
-│ 1 │ devTestAWS  │ 8eb192e2-9beb-466b-ae14-c05fc8403cf4 │ AKIA3D2FRQQUUXEJX76M │ devTestAWS │ active │ Sources::AWS::Keys │
+│ 1 │ devTestAWS  │ 8eb192e2-9beb-466b-ae14-c05fc8403cf4 │ AKIAIOSFODNN7EXAMPLE │ devTestAWS │ active │ Sources::AWS::Keys │
 ╰───┴─────────────┴──────────────────────────────────────┴──────────────────────┴────────────┴────────┴────────────────────╯
 ```
 
@@ -179,7 +187,7 @@ Flags:
 
 ## Source Sync SourceID
 
-`hava source sync --source-id a58b7cb1-f9da-42ad-9fc1-8dc61b0d3e38`
+`hava source sync a58b7cb1-f9da-42ad-9fc1-8dc61b0d3e38`
 
 
 ## Source Create AWS (Using Access Keys)
@@ -192,13 +200,13 @@ Flags:
 ╭───┬─────────────┬──────────────────────────────────────┬──────────────────────┬────────────┬────────┬────────────────────╮
 │   │ DISPLAYNAME │ ID                                   │ INFO                 │ NAME       │ STATE  │ TYPE               │
 ├───┼─────────────┼──────────────────────────────────────┼──────────────────────┼────────────┼────────┼────────────────────┤
-│ 1 │ devTestAWS  │ 040d5b5e-03b9-4343-9393-8ad0794512f4 │ AKIA3D2FRQQUUXEJX76M │ devTestAWS │ queued │ Sources::AWS::Keys │
+│ 1 │ devTestAWS  │ 040d5b5e-03b9-4343-9393-8ad0794512f4 │ AKIAIOSFODNN7EXAMPLE │ devTestAWS │ queued │ Sources::AWS::Keys │
 ╰───┴─────────────┴──────────────────────────────────────┴──────────────────────┴────────────┴────────┴────────────────────╯
 ```
 
 ## Source Create AWS (Using Cross Account Role)
 
-`hava source create aws --name devCAR --role-arn arn:aws:iam::764113159209:role/HavaCAR`
+`hava source create aws --name devCAR --role-arn $AWS_CROSS_ACCOUNT_ROLE`
 
 ```bash
 [INFO]   Created AWS Source for the following source:
@@ -206,7 +214,7 @@ Flags:
 ╭───┬─────────────┬──────────────────────────────────────┬────────────────────────────────────────┬────────┬────────┬────────────────────────────────╮
 │   │ DISPLAYNAME │ ID                                   │ INFO                                   │ NAME   │ STATE  │ TYPE                           │
 ├───┼─────────────┼──────────────────────────────────────┼────────────────────────────────────────┼────────┼────────┼────────────────────────────────┤
-│ 1 │ devCAR      │ 31f9b6a6-4e48-400a-8ced-5bfc2a1aacc2 │ arn:aws:iam::764113159209:role/HavaCAR │ devCAR │ queued │ Sources::AWS::CrossAccountRole │
+│ 1 │ devCAR      │ 31f9b6a6-4e48-400a-8ced-5bfc2a1aacc2 │ arn:aws:iam::123456789012:role/HavaCAR │ devCAR │ queued │ Sources::AWS::CrossAccountRole │
 ╰───┴─────────────┴──────────────────────────────────────┴────────────────────────────────────────┴────────┴────────┴────────────────────────────────╯
 ```
 
@@ -251,7 +259,7 @@ hava source list
 ╭───┬───────────────┬──────────────────────────────────────┬──────────────────────┬───────────────┬────────┬─────────────────────────────────────────╮ 
 │   │ DISPLAYNAME   │ ID                                   │ INFO                 │ NAME          │ STATE  │ TYPE                                    │
 ├───┼───────────────┼──────────────────────────────────────┼──────────────────────┼───────────────┼────────┼─────────────────────────────────────────┤
-│ 1 │ dev           │ 4f14c115-3b0d-40ea-b075-6df9b2fb81c9 │ AKIA3D2FRQQUUXEJX76M │ dev           │ active │ Sources::AWS::Keys                      │
+│ 1 │ dev           │ 4f14c115-3b0d-40ea-b075-6df9b2fb81c9 │ AKIAIOSFODNN7EXAMPLE │ dev           │ active │ Sources::AWS::Keys                      │
 │ 2 │ GCPDevChange3 │ f2a26440-10bf-43d1-9742-8361de30590f │ credentials.json     │ GCPDevChange3 │ active │ Sources::GCP::ServiceAccountCredentials │
 ╰───┴───────────────┴──────────────────────────────────────┴──────────────────────┴───────────────┴────────┴─────────────────────────────────────────╯
 ```
@@ -265,7 +273,7 @@ hava source list --json | jq
   {
     "DisplayName": "dev",
     "Id": "4f14c115-3b0d-40ea-b075-6df9b2fb81c9",
-    "Info": "AKIA3D2FRQQUUXEJX76M",
+    "Info": "AKIAIOSFODNN7EXAMPLE",
     "Name": "dev",
     "State": "active",
     "Type": "Sources::AWS::Keys"
@@ -286,7 +294,7 @@ hava source list --json | jq
 ```bash
 hava source list --csv       
 ,DisplayName,Id,Info,Name,State,Type
-1,dev,4f14c115-3b0d-40ea-b075-6df9b2fb81c9,AKIA3D2FRQQUUXEJX76M,dev,active,Sources::AWS::Keys
+1,dev,4f14c115-3b0d-40ea-b075-6df9b2fb81c9,AKIAIOSFODNN7EXAMPLE,dev,active,Sources::AWS::Keys
 2,GCPDevChange3,f2a26440-10bf-43d1-9742-8361de30590f,credentials.json,GCPDevChange3,active,Sources::GCP::ServiceAccountCredentials
 ```
 
@@ -297,7 +305,7 @@ hava source list --csv
 hava source list --markdown
 | | DisplayName | Id | Info | Name | State | Type |
 | ---:| --- | --- | --- | --- | --- | --- |
-| 1 | dev | 4f14c115-3b0d-40ea-b075-6df9b2fb81c9 | AKIA3D2FRQQUUXEJX76M | dev | active | Sources::AWS::Keys |
+| 1 | dev | 4f14c115-3b0d-40ea-b075-6df9b2fb81c9 | AKIAIOSFODNN7EXAMPLE | dev | active | Sources::AWS::Keys |
 | 2 | GCPDevChange3 | f2a26440-10bf-43d1-9742-8361de30590f | credentials.json | GCPDevChange3 | active | Sources::GCP::ServiceAccountCredentials |
 ```
 
@@ -312,7 +320,7 @@ go run main.go source list
 ╭───┬───────────────┬──────────────────────────────────────┬──────────────────────┬───────────────┬────────┬─────────────────────────────────────────╮
 │   │ DISPLAYNAME   │ ID                                   │ INFO                 │ NAME          │ STATE  │ TYPE                                    │
 ├───┼───────────────┼──────────────────────────────────────┼──────────────────────┼───────────────┼────────┼─────────────────────────────────────────┤
-│ 1 │ dev           │ 4f14c115-3b0d-40ea-b075-6df9b2fb81c9 │ AKIA3D2FRQQUUXEJX76M │ dev           │ active │ Sources::AWS::Keys                      │
+│ 1 │ dev           │ 4f14c115-3b0d-40ea-b075-6df9b2fb81c9 │ AKIAIOSFODNN7EXAMPLE │ dev           │ active │ Sources::AWS::Keys                      │
 │ 2 │ GCPDevChange3 │ f2a26440-10bf-43d1-9742-8361de30590f │ credentials.json     │ GCPDevChange3 │ active │ Sources::GCP::ServiceAccountCredentials │
 ╰───┴───────────────┴──────────────────────────────────────┴──────────────────────┴───────────────┴────────┴─────────────────────────────────────────╯
 ```

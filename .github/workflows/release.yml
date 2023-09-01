@@ -1,84 +1,152 @@
-name: Release hava cli
+name: Hava binary release
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'hava version number'
-        required: true
-        default: ''
-      changes:
-        type: string
-        description: 'hava changes/features in this release'
-        required: true
-        default: ''
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: write
 
 jobs:
-  build:
+  goreleaser:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_CLI_EXPERIMENTAL: "enabled"
     steps:
-      - name: Checkout code
+      -
+        name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Install Go
+      -
+        name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.20.7
+          go-version: '1.20.7'
+      -
+        name: Set up Go
+        uses: actions/setup-go@v4
+        
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
 
-      - name: Install gox
-        run: |
-          go get github.com/mitchellh/gox 
-          go install github.com/mitchellh/gox 
-
-      - name: Install zip
-        run: |
-          sudo apt-get update -q
-          sudo apt-get install zip -q
-
-      - name: Cross compile
-        run: |
-          gox \
-            -os="linux darwin windows" \
-            -ldflags="-X 'github.com/teamhava/hava-ui-cli/version.Version=${{ github.event.inputs.version }}' -X 'github.com/teamhava/hava-ui-cli/version.Build=${{ github.sha }}' -X 'github.com/teamhava/hava-ui-cli/version.Date=$(date)' -X 'github.com/teamhava/hava-ui-cli/version.BuiltBy=github'" \
-            -arch="amd64 arm64" \
-            -output "./pkg/hava-{{.OS}}-{{.Arch}}" \
-            .
-
-      - name: Print version
-        run: ./pkg/hava-linux-amd64 --version
-
-      - uses: actions/upload-artifact@v3
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v2
         with:
-          name: hava-artifacts
-          path: ./pkg/*     
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      -
+        name: Build Release
+        uses: goreleaser/goreleaser-action@v4
+        with:
+          distribution: goreleaser
+          version: ${{ env.GITHUB_REF_NAME }}
+          args: release --clean
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
 
-      - name: Update Changelog
-        uses: stefanzweifel/changelog-updater-action@v1
+      -
+        name: Upload Apple binary
+        uses: actions/upload-artifact@v3
         with:
-          latest-version: ${{ github.event.inputs.version }}
-          release-notes: ${{ github.event.inputs.changes }}
-
-      - name: Commit updated CHANGELOG
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          branch: main
-          commit_message: Update CHANGELOG [release workflow]
-          file_pattern: CHANGELOG.md
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.event.inputs.version }}
-          body: ${{ github.event.inputs.changes }}
-          files: |
-            ./pkg/hava-darwin-amd64
-            ./pkg/hava-darwin-arm64
-            ./pkg/hava-linux-amd64
-            ./pkg/hava-windows-amd64.exe
+          name: hava_darwin_all_presigned
+          path: dist/hava_Darwin_all.zip
 
       
+  signbinary:
+    runs-on: macos-latest
+    needs: goreleaser
+    steps:
+      - 
+        name: Get Darwin binary
+        uses: actions/download-artifact@v3
+        with:
+          name: hava_darwin_all_presigned
+
+      - 
+        name: Apple certificate, provisioning profile, sign binary, notorize
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          AC_USERNAME: ${{ secrets.APPLE_USERNAME }}
+          AC_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          AC_TEAMID: ${{ secrets.AC_TEAMID }}
+          MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
+          DIST_FILE_ZIP: hava_Darwin_all.zip
+        run: |
+          # create variables
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          # import certificate and provisioning profile from secrets
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+          echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
+
+          # create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+          # import certificate to keychain
+          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+          security find-identity -v
+
+
+          echo "List Files"
+          ls -lh ./
+
+          # Unzip zip file
+          ditto -x -k $DIST_FILE_ZIP ./
+
+          echo "List Files"
+          ls -lh ./
+
+          # Sign binaries
+          echo "Signing binaries"
+          codesign --force -s "$MACOS_CERTIFICATE_NAME" -v "./hava" --options=runtime --timestamp
+
+          # Notarize
+          # Store the notarization credentials so that we can prevent a UI password dialog from blocking the CI
+
+          echo "Create keychain profile"
+          xcrun notarytool store-credentials "notarytool-profile" --apple-id "$AC_USERNAME" --team-id "$AC_TEAMID" --password "$AC_PASSWORD"
+
+          # We can't notarize an app bundle directly, but we need to compress it as an archive.
+          # Therefore, we create a zip file containing our app bundle, so that we can send it to the
+          # notarization service
+
+
+          # Notarize insider binary
+          echo "Creating temp notarization archive for insider build"
+          ditto -c -k --keepParent "./hava" "./hava_Darwin_all.zip"
+
+          # Here we send the notarization request to the Apple's Notarization service, waiting for the result.
+          # This typically takes a few seconds inside a CI environment, but it might take more depending on the App
+          # characteristics. Visit the Notarization docs for more information and strategies on how to optimize it if
+          # you're curious
+          echo "Notarize insider app"
+          xcrun notarytool submit "./hava_Darwin_all.zip" --keychain-profile "notarytool-profile" --wait
+
+          # Delete build keychain
+          security delete-keychain $KEYCHAIN_PATH
+
+          echo "List Files"
+          ls -lh ./
+
+      - 
+        name: Upload Darwin binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: hava_Darwin_all.zip
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: "Signed Darwin hava binary"
 
