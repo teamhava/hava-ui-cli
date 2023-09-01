@@ -34,13 +34,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       -
+        name: List FIles
+        run: |
+          echo "List Files"
+          ls -lh ./
+
+          echo "List Dist Files"
+          ls -lh ./dist/
+
+      -
         name: Upload Apple binary
         uses: actions/upload-artifact@v3
-        env:
-          DIST_FILE_UNIVERSAL: dist/hava_Darwin_all.zip
         with:
           name: hava_darwin_all_presigned
-          path: $DIST_FILE_UNIVERSAL
+          path: dist/hava_Darwin_all.zip
 
       
   signbinary:
