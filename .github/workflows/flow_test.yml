@@ -1,0 +1,34 @@
+name: test flow
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  goreleaser:
+    runs-on: macos-latest
+    env:
+      APPLE_USERNANME: ${{ secrets.APPLE_USERNANME }}
+      APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      -
+        name: Set up Go
+        uses: actions/setup-go@v4
+
+      - 
+        name: Install gon
+        run: |
+          # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          # brew install mitchellh/gon/gon
+          curl -L -o gon.zip https://github.com/mitchellh/gon/releases/download/v0.2.5/gon_macos.zip
+          unzip gon.zip
+          rm gon.zip
+          mv gon $(go env GOPATH)/bin/gon
+          gon -v

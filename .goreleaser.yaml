@@ -1,0 +1,112 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+project_name: hava
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    - go mod tidy
+    # you may remove this if you don't need go generate
+    - go generate ./...
+builds:
+  - binary: hava
+    id: hava
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    goamd64:
+      - v1
+    ldflags: 
+      - -X github.com/teamhava/hava-ui-cli/version.Version={{.Version}} 
+      - -X github.com/teamhava/hava-ui-cli/version.Build={{.Tag}} 
+      - -X github.com/teamhava/hava-ui-cli/version.BuiltBy=goreleaser 
+      - -X github.com/teamhava/hava-ui-cli/version.Date={{.Date}}
+  - binary: hava
+    id: macos
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+    ldflags: 
+      - -X github.com/teamhava/hava-ui-cli/version.Version={{.Version}} 
+      - -X github.com/teamhava/hava-ui-cli/version.Build={{.Tag}} 
+      - -X github.com/teamhava/hava-ui-cli/version.BuiltBy=goreleaser 
+      - -X github.com/teamhava/hava-ui-cli/version.Date={{.Date}}
+    
+universal_binaries:
+  - ids:
+      - macos 
+    replace: true
+
+
+dockers:
+  - image_templates:
+      - hava/cli
+      - hava/cli:latest
+      - hava/cli:{{ .Tag }}
+    dockerfile: Dockerfile-goreleaser
+
+archives:
+  - format: zip
+    # this name template makes the OS and Arch compatible with the results of uname.
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+
+# brews:
+#   -
+#     name: hava
+
+#     # Git author used to commit to the repository.
+#     commit_author:
+#       name: teamhava
+#       email: support@hava.io
+
+#      # Your app's homepage.
+#     homepage: "https://github.com/teamhava/hava-ui-cli"
+
+#     # Folder inside the repository to put the formula.
+#     folder: Formula
+
+#     # Your app's description.
+#     #
+#     # Templates: allowed
+#     description: "hava is a Go CLI tool to interact with app.hava.io platform."
+
+#     # SPDX identifier of your app's license.
+#     license: "Apache-2.0"
+
+#     # Setting this will prevent goreleaser to actually try to commit the updated
+#     # formula - instead, the formula file will be stored on the dist folder only,
+#     # leaving the responsibility of publishing it to the user.
+#     # If set to auto, the release will not be uploaded to the homebrew tap
+#     # in case there is an indicator for prerelease in the tag e.g. v1.0.0-rc1
+#     #
+#     # Templates: allowed
+#     skip_upload: true
+
+#     # Repository to push the generated files to.
+#     repository:
+#       owner: teamhava
+#       name: homebrew-teamhava
+
+
+      
