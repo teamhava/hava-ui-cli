@@ -34,15 +34,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       -
-        name: List FIles
-        run: |
-          echo "List Files"
-          ls -lh ./
-
-          echo "List Dist Files"
-          ls -lh ./dist/
-
-      -
         name: Upload Apple binary
         uses: actions/upload-artifact@v3
         with:
@@ -134,22 +125,13 @@ jobs:
           echo "List Files"
           ls -lh ./
 
-      -
-        name: Upload Apple signed binary
-        uses: actions/upload-artifact@v3
-        env:
-          DIST_FILE_UNIVERSAL: dist/hava_Darwin_all.zip
-        with:
-          name: hava_darwin_all_signed
-          path: $DIST_FILE_UNIVERSAL
-
       - 
         name: Upload Darwin binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: hava_Darwin_all.zip
-          asset_name: hava_darwin_all
+          asset_name: hava_darwin_all.zip
           tag: ${{ github.ref }}
           overwrite: true
           body: "Signed Darwin hava binary"
