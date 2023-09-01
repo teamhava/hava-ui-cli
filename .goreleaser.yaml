@@ -46,8 +46,9 @@ universal_binaries:
 dockers:
   - image_templates:
       - hava/cli
-    tag_templates:
-      - '{{ .Tag }}'
+      - hava/cli:latest
+      - hava/cli:{{ .Tag }}
+    dockerfile: Dockerfile-goreleaser
 
 archives:
   - format: zip
