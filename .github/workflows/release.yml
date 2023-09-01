@@ -46,7 +46,7 @@ jobs:
           version: ${{ env.GITHUB_REF_NAME }}
           args: release --clean
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
 
       -
         name: Upload Apple binary
