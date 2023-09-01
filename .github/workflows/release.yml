@@ -146,7 +146,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: hava_Darwin_all.zip
-          asset_name: hava_darwin_all.zip
           tag: ${{ github.ref }}
           overwrite: true
           body: "Signed Darwin hava binary"
