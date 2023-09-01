@@ -32,8 +32,8 @@ jobs:
 
       - name: Install hava binary
         run: |
-          curl -L -o hava.tar.gz "https://github.com/teamhava/hava-ui-cli/releases/download/${{ github.event.inputs.hava_version }}/hava_Linux_x86_64.tar.gz"
-          tar xzvf hava.tar.gz
+          curl -L -o hava.zip "https://github.com/teamhava/hava-ui-cli/releases/download/${{ github.event.inputs.hava_version }}/hava_Linux_x86_64.zip"
+          unzip hava.zip
           chmod +x hava
 
 
