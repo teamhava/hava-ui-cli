@@ -43,11 +43,11 @@ universal_binaries:
     replace: true
 
 
-# dockers:
-#   - image_templates:
-#       - hava/cli
-#     tag_templates:
-#       - '{{ .Tag }}'
+dockers:
+  - image_templates:
+      - hava/cli
+    tag_templates:
+      - '{{ .Tag }}'
 
 archives:
   - format: zip
