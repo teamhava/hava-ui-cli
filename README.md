@@ -46,7 +46,7 @@ This tool is a CLI driven binary to interface with the Hava API/SaaS platform. T
 
 Binaries are created as part of a release, check out the [Release Page](https://github.com/teamhava/hava-ui-cli/releases) for the latest version.
 
-Specific [OS (Linux|OSX|Windows) installation here](./docs/installation.md). 
+Specific [OS (Linux|OSX|Windows|Docker) installation here](./docs/installation.md). 
 
 
 ## Usage
