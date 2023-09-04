@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.0.24-pre-alpha - 2023-09-04
+
+### Changelog
+
+- 5b43908 Update CHANGELOG
+- 78f0649 Update issue templates
+- 8004cf0 Update release job name
+- 726cd76 move brew to macos stage
+
 ## 0.0.23-pre-alpha - 2023-09-04
 
 ### Changelog
