@@ -9,32 +9,27 @@ before:
     - go generate ./...
 builds:
   - binary: hava
-    id: hava
+    id: macos
     env:
       - CGO_ENABLED=0
     goos:
-      - linux
-      - windows
-    goarch:
-      - amd64
-      - arm64
-    goamd64:
-      - v1
+      - darwin
     ldflags: 
       - -X github.com/teamhava/hava-ui-cli/version.Version={{.Version}} 
       - -X github.com/teamhava/hava-ui-cli/version.Build={{.Tag}} 
       - -X github.com/teamhava/hava-ui-cli/version.BuiltBy=goreleaser 
-      - -X github.com/teamhava/hava-ui-cli/version.Date={{.Date}} 
+      - -X github.com/teamhava/hava-ui-cli/version.Date={{.Date}}
+    
+universal_binaries:
+  - ids:
+      - macos 
+    replace: true
+    hooks:
+      post: 
+        - ls -ls dist/
+        - ls -ls dist/hava_darwin_all/
+        - codesign --force -s "{{ .Env.MACOS_CERTIFICATE_NAME }}" -v "./dist/hava_darwin_all/hava" --options=runtime --timestamp
 
-dockers:
-  - image_templates:
-      - hava/cli
-      - hava/cli:latest
-      - hava/cli:{{ .Tag }}
-    dockerfile: Dockerfile-goreleaser
-
-release:
-  skip_upload: true
 
 archives:
   - format: zip
@@ -57,33 +52,3 @@ changelog:
       - '^docs:'
       - '^test:'
 
-brews:
-  -
-    name: hava
-
-    # Git author used to commit to the repository.
-    commit_author:
-      name: teamhava
-      email: support@hava.io
-
-     # Your app's homepage.
-    homepage: "https://github.com/teamhava/hava-ui-cli"
-
-    # Folder inside the repository to put the formula.
-    folder: Formula
-
-    # Your app's description.
-    #
-    # Templates: allowed
-    description: "hava is a Go CLI tool to interact with app.hava.io platform."
-
-    # SPDX identifier of your app's license.
-    license: "Apache-2.0"
-
-    # Repository to push the generated files to.
-    repository:
-      owner: teamhava
-      name: homebrew-hava
-
-
-      

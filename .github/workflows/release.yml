@@ -5,12 +5,100 @@ on:
     tags:
       - '*'
 
+
+
 permissions:
   contents: write
 
 jobs:
+  BuildHavaDarwin:
+    runs-on: macos-latest
+    env:
+      BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+      P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+      KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+      AC_USERNAME: ${{ secrets.APPLE_USERNAME }}
+      AC_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+      AC_TEAMID: ${{ secrets.AC_TEAMID }}
+      MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - 
+        name: Setup Apple certificate, provisioning profile
+        run: |
+          # create variables
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          # import certificate and provisioning profile from secrets
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+          echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
+
+          # create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+          # import certificate to keychain
+          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+          security find-identity -v
+      -
+        name: Build & Release Mac
+        uses: goreleaser/goreleaser-action@v4
+        with:
+          distribution: goreleaser
+          version: ${{ env.GITHUB_REF_NAME }}
+          args: release --config .goreleaser-mac.yaml --clean --verbose
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
+
+
+      - 
+        name: Apple notorize binary
+        run: |
+
+          # create variables
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          security list-keychain -d user -s $KEYCHAIN_PATH
+          security find-identity -v
+
+          # Notarize
+          # Store the notarization credentials so that we can prevent a UI password dialog from blocking the CI
+
+          echo "Create keychain profile"
+          xcrun notarytool store-credentials "notarytool-profile" --apple-id "$AC_USERNAME" --team-id "$AC_TEAMID" --password "$AC_PASSWORD"
+
+          # We can't notarize an app bundle directly, but we need to compress it as an archive.
+          # Therefore, we create a zip file containing our app bundle, so that we can send it to the
+          # notarization service
+
+          # Here we send the notarization request to the Apple's Notarization service, waiting for the result.
+          # This typically takes a few seconds inside a CI environment, but it might take more depending on the App
+          # characteristics. Visit the Notarization docs for more information and strategies on how to optimize it if
+          # you're curious
+          echo "Notarize insider app"
+          xcrun notarytool submit "./dist/hava_Darwin_all.zip" --keychain-profile "notarytool-profile" --wait
+
+          # Delete build keychain
+          security delete-keychain $KEYCHAIN_PATH
+
+          echo "List Files"
+          ls -lh ./
+
+
+
+
   goreleaser:
     runs-on: ubuntu-latest
+    needs: BuildHavaDarwin
     env:
       DOCKER_CLI_EXPERIMENTAL: "enabled"
     steps:
@@ -44,109 +132,19 @@ jobs:
         with:
           distribution: goreleaser
           version: ${{ env.GITHUB_REF_NAME }}
-          args: release --clean
+          args: release --clean --verbose
         env:
           GITHUB_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
 
-      -
-        name: Upload Apple binary
-        uses: actions/upload-artifact@v3
-        with:
-          name: hava_darwin_all_presigned
-          path: dist/hava_Darwin_all.zip
-
-      
-  signbinary:
-    runs-on: macos-latest
-    needs: goreleaser
-    steps:
       - 
-        name: Get Darwin binary
-        uses: actions/download-artifact@v3
-        with:
-          name: hava_darwin_all_presigned
-
-      - 
-        name: Apple certificate, provisioning profile, sign binary, notorize
-        env:
-          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
-          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
-          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
-          AC_USERNAME: ${{ secrets.APPLE_USERNAME }}
-          AC_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          AC_TEAMID: ${{ secrets.AC_TEAMID }}
-          MACOS_CERTIFICATE_NAME: ${{ secrets.MACOS_CERTIFICATE_NAME }}
-          DIST_FILE_ZIP: hava_Darwin_all.zip
-        run: |
-          # create variables
-          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
-          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
-          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-
-          # import certificate and provisioning profile from secrets
-          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
-          echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
-
-          # create temporary keychain
-          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-
-          # import certificate to keychain
-          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-          security list-keychain -d user -s $KEYCHAIN_PATH
-
-          security find-identity -v
-
-
-          echo "List Files"
-          ls -lh ./
-
-          # Unzip zip file
-          ditto -x -k $DIST_FILE_ZIP ./
-
-          echo "List Files"
-          ls -lh ./
-
-          # Sign binaries
-          echo "Signing binaries"
-          codesign --force -s "$MACOS_CERTIFICATE_NAME" -v "./hava" --options=runtime --timestamp
-
-          # Notarize
-          # Store the notarization credentials so that we can prevent a UI password dialog from blocking the CI
-
-          echo "Create keychain profile"
-          xcrun notarytool store-credentials "notarytool-profile" --apple-id "$AC_USERNAME" --team-id "$AC_TEAMID" --password "$AC_PASSWORD"
-
-          # We can't notarize an app bundle directly, but we need to compress it as an archive.
-          # Therefore, we create a zip file containing our app bundle, so that we can send it to the
-          # notarization service
-
-
-          # Notarize insider binary
-          echo "Creating temp notarization archive for insider build"
-          ditto -c -k --keepParent "./hava" "./hava_Darwin_all.zip"
-
-          # Here we send the notarization request to the Apple's Notarization service, waiting for the result.
-          # This typically takes a few seconds inside a CI environment, but it might take more depending on the App
-          # characteristics. Visit the Notarization docs for more information and strategies on how to optimize it if
-          # you're curious
-          echo "Notarize insider app"
-          xcrun notarytool submit "./hava_Darwin_all.zip" --keychain-profile "notarytool-profile" --wait
-
-          # Delete build keychain
-          security delete-keychain $KEYCHAIN_PATH
-
-          echo "List Files"
-          ls -lh ./
-
-      - 
-        name: Upload Darwin binaries to release
+        name: Upload Windows/Linux binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: hava_Darwin_all.zip
+          file: dist/*.zip
+          file_glob: true
           tag: ${{ github.ref }}
           overwrite: true
-          body: "Signed Darwin hava binary"
 
+  
+  
