@@ -1,0 +1,48 @@
+# Starter pipeline which uses the binary from the release page
+# Plase set HAVA_TOKEN and AUTOMATION=1 as variables in your pipeline
+# The following is a simple example which installs the hava binary and uses it to list hava sources
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: |
+      curl -L -o hava.tar.gz "https://github.com/teamhava/hava-ui-cli/releases/download/0.0.1/hava_Linux_x86_64.tar.gz"
+      tar xzvf hava.tar.gz
+      chmod +x hava
+      which jq
+  displayName: 'Install Hava binary'
+
+- script: ./hava source list
+  env:
+    HAVA_TOKEN: $(HAVA_TOKEN)
+    AUTOMATION: $(AUTOMATION)
+  displayName: 'List Hava sources'
+
+- script: ./hava source list --json
+  env:
+    HAVA_TOKEN: $(HAVA_TOKEN)
+    AUTOMATION: $(AUTOMATION)
+  displayName: 'List Hava sources Output JSON'
+
+- script: |
+    which jq
+    ./hava source list --json | jq
+    AWS_SOURCE_ID=$(./hava source list --json | jq  -r '.[] | select(.Name=="dev") | .Id')
+    echo $AWS_SOURCE_ID
+    echo "##vso[task.setvariable variable=awsSourceID]$AWS_SOURCE_ID"
+  env:
+    HAVA_TOKEN: $(HAVA_TOKEN)
+    AUTOMATION: $(AUTOMATION)
+  displayName: 'Get AWS Source ID'
+
+
+- script: |
+    ./hava source list --source-id $(awsSourceID)
+  env:
+    HAVA_TOKEN: $(HAVA_TOKEN)
+    AUTOMATION: $(AUTOMATION)
+  displayName: 'List Hava AWS Source ID'
