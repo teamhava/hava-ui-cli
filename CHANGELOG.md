@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.0.23-pre-alpha - 2023-09-04
+
+### Changelog
+
+- 524b89f - Build/release, Sign Darwin binary, followed by windows/linux - 2 goreleaser configs
+- 6e98bc1 - Get rid of gon.hcl - Update trigger for main workflow
+- e303b60 - change example folder to cicd-example - update github actions workflow
+- c18f4bf - github actions workflow - gitlab ci example
+- a6f691f Add azureDevOps pipeline and readme files
+- e8869be Merge branch 'main' into cicd-examples
+- 66679a4 Merge pull request #6 from teamhava/cicd-examples
+- 8dd9331 Remove AWS access IDs and typos
+- 9fe1c53 Update CHANGELOG
+- abf670f Update README
+- 715d692 Update README with correct links to release and instructions for install
+- f2ee63a Update github actions cicd demo
+- 5b9ff59 github actions examples
+
 ## 0.0.22-pre-alpha - 2023-09-01
 
 ### Changelog
