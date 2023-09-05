@@ -1,31 +1,24 @@
 stages:          # List of stages for jobs, and their order of execution
-  - build
-  - test
-  - deploy
+  - cli-demo-hava
 
-install-hava:       # This job runs in the build stage, which runs first.
-  stage: build
-  script:
-    - version=0.0.5-pre-alpha
-    - curl -L -o hava "https://github.com/teamhava/hava-ui-cli/releases/download/${version}/hava-linux-amd64"
-    - chmod +x hava
 
-create:   # This job runs in the test stage.
-  stage: test    # It only starts when the job in the build stage completes successfully.
-  script:
-    - echo "Create Hava Sources"
-    - ./hava source create aws --name $HAVA_AWS_SOURCE_NAME --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY
-    - ./hava source create aws --name $HAVA_AWSCAR_SOURCE_NAME --role-arn $AWS_CROSS_ACCOUNT_ROLE
-    - ./hava source create gcp  --name $HAVA_GCP_SOURCE_NAME --config-file $GCP_ENCODED_FILE
-    - ./hava source create azure --name $HAVA_AZURE_SOURCE_NAME --client-id $ARM_CLIENT_ID --tenant-id $ARM_TENANT_ID --subscription-id $ARM_SUBSCRIPTION_ID --secret-key $ARM_SECRET_TEXT
-    - ./hava source list
+default:
+  image: 
+    name: hava/cli:latest
+    entrypoint: ["/bin/sh","-c"]
 
-delete:      
-  stage: deploy  
+variables:
+  AUTOMATION: 1
+
+
+list-hava-sources:
+  stage: cli-demo-hava
   script:
-    - echo "Delete Hava Sources ..."
-    - ./hava source delete $AWS_SOURCE_ID --autoapprove
-    - ./hava source delete $AWSCAR_SOURCE_ID --autoapprove
-    - ./hava source delete $GCP_SOURCE_ID --autoapprove
-    - ./hava source delete $AZURE_SOURCE_ID --autoapprove
-    - ./hava source list
+    - pwd
+    - hava source list
+
+list-hava-source-json:
+  stage: cli-demo-hava
+  script:
+    - pwd
+    - hava source list --json

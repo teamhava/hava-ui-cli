@@ -1,3 +1,5 @@
 FROM alpine
-ENTRYPOINT ["/hava"]
-COPY hava /
+RUN apk add --no-cache git bash openssh jq
+COPY hava /bin/
+WORKDIR /
+ENTRYPOINT ["/bin/hava"]
