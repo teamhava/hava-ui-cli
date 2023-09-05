@@ -1,6 +1,6 @@
 # CICD Examples
 
-The following are sample CICD pipelines for various platforms:
+The following are sample CICD pipelines for various platforms. We recommend choosing which suits best. 
 
 
 ## Github Actions
@@ -16,4 +16,4 @@ The following are sample CICD pipelines for various platforms:
 
 ## Gitlab CI
 
-- [Gitlab CI](./gitlab/.gitla-ci.yml) (Uses the binary)
+- [Gitlab CI](./gitlab/.gitla-ci.yml) (Uses the docker image)

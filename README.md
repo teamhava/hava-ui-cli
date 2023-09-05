@@ -142,7 +142,7 @@ When running `hava` CLI in automation or a CICD pipeline, we recommend export/se
 
 Some commands do require human inputs or can be bypassed with a flag (eg `--autoapprove`). 
 
-Checkout our [Github CLI Test workflow](./.github/workflows/cli-test.yml) and other [CICD examples](./cicd-examples/README.md). 
+Checkout our [Github CLI Test workflow](./.github/workflows/cli-test.yml) and other [CICD examples](./cicd-examples/README.md) for other platforms like Gitlab-CI and Azure DevOps. 
 
 # Source Commands
 
