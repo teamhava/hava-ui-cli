@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.0.25-beta - 2023-09-05
+
+### Changelog
+
+- 7e02cae Merge branch 'main' into repo-standards
+- 31a6d29 Merge pull request #9 from teamhava/repo-standards
+- 997b97c Release and contributing guides
+- a62f217 Remove second "setup go" step
+- 6e8926c Update contributing guide
+
 ## 0.0.24-pre-alpha - 2023-09-04
 
 ### Changelog
