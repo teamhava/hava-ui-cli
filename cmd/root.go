@@ -113,23 +113,21 @@ func initConfig() {
 
 	viper.AutomaticEnv() // read in environment variables that match
 
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-	}
-
 	if havaToken := viper.GetString("HAVA_TOKEN"); len(havaToken) == 0 {
-		if automationSet := viper.GetString("AUTOMATION"); len(automationSet) == 0 {
-			// Interact with user to create a ~/.hava.env config file
-			createConfigFile()
-			// If a config file is found, read it in.
-			if err := viper.ReadInConfig(); err == nil {
-				fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+
+		if err := viper.ReadInConfig(); err != nil {
+
+			if automationSet := viper.GetString("AUTOMATION"); len(automationSet) == 0 {
+				// Interact with user to create a  ./hava.env config file
+				createConfigFile()
+			} else {
+				fmt.Println("[Error] AUTOMATION variable set, with no HAVA_TOKEN \n\tIf running CLI interactively, unset AUTOMATION variable \n\tELSE\n\tPlease set HAVA_TOKEN environment variable or provide a valid hava token in a config file at ~/.hava.yaml or ./.hava.yaml")
+				os.Exit(1)
 			}
 		} else {
-			fmt.Println("[Error] AUTOMATION variable set, \n\tPlease set HAVA_TOKEN environment variable or provide a valid hava token in a config file at ~/.hava.yaml or ./.hava.yaml")
-			os.Exit(1)
+			fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 		}
+
 	}
 
 	// Initialize output

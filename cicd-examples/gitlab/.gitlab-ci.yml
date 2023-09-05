@@ -1,0 +1,24 @@
+stages:          # List of stages for jobs, and their order of execution
+  - cli-demo-hava
+
+
+default:
+  image: 
+    name: hava/cli:latest
+    entrypoint: ["/bin/sh","-c"]
+
+variables:
+  AUTOMATION: 1
+
+
+list-hava-sources:
+  stage: cli-demo-hava
+  script:
+    - pwd
+    - hava source list
+
+list-hava-source-json:
+  stage: cli-demo-hava
+  script:
+    - pwd
+    - hava source list --json

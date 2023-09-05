@@ -1,15 +1,15 @@
-name: Testing Hava CLI
+name: Hava CLI Example
 
 on:
   workflow_dispatch:
     inputs:
-      General Comments:
+      hava_version:
         description: 'General Comments'
         required: false
-        default: ""
+        default: "0.0.1"
 
 jobs:
-  EndToEndTests:
+  Hava_CLI_Test:
     runs-on: ubuntu-latest
     env: 
       HAVA_TOKEN: ${{ secrets.HAVA_TOKEN }}
@@ -28,34 +28,14 @@ jobs:
       AUTOMATION: 1
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Install Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: 1.20.7
 
-      - name: Install gox
+      - name: Install hava binary
         run: |
-          go get github.com/mitchellh/gox 
-          go install github.com/mitchellh/gox 
+          curl -L -o hava.zip "https://github.com/teamhava/hava-ui-cli/releases/download/${{ github.event.inputs.hava_version }}/hava_Linux_x86_64.zip"
+          unzip hava.zip
+          chmod +x hava
 
-      - name: Install zip
-        run: |
-          sudo apt-get update -q
-          sudo apt-get install zip jq -q
-
-      - name: Cross compile
-        run: |
-          gox \
-            -os="linux" \
-            -ldflags="-X 'github.com/teamhava/hava-ui-cli/version.Build=${{ github.sha }}' -X 'github.com/teamhava/hava-ui-cli/version.Date=$(date)' -X 'github.com/teamhava/hava-ui-cli/version.BuiltBy=github'" \
-            -arch="amd64" \
-            -output "./hava" \
-            .
 
       - name: Print version
         run: ./hava --version
