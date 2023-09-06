@@ -1,0 +1,35 @@
+# The following assumes your Buildkite agent already has access to the `hava` binary and has a valid HAVA_TOKEN environment variable set 
+# ~/.hava.yml config file configured.
+
+steps:
+    
+  - command: "hava -v"
+    label: "Hava Version"
+    
+  - command: "hava source list"
+    label: "List Hava Sources"
+
+  - command: hava  source create aws --name $HAVA_AWS_SOURCE_NAME --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY
+    label: Create Source AWS (Using Access Keys)
+          
+  - command: hava  source list
+    label: List ALL sources
+
+  - command: hava  source create aws --name $HAVA_AWSCAR_SOURCE_NAME --role-arn $AWS_CROSS_ACCOUNT_ROLE
+    label: Create Source AWS (Using Cross Account Roles)
+          
+
+  - command: hava  source create gcp  --name $HAVA_GCP_SOURCE_NAME --config-file $GCP_ENCODED_FILE
+    label: Create Source GCP
+          
+
+  - command: hava  source create azure --name $HAVA_AZURE_SOURCE_NAME --client-id $ARM_CLIENT_ID --tenant-id $ARM_TENANT_ID --subscription-id $ARM_SUBSCRIPTION_ID --secret-key $ARM_SECRET_TEXT
+    label: Create Source Azure
+          
+
+  - command: hava  source list
+    label: List ALL sources
+
+  - command: hava  source list --json
+    label: List ALL sources (JSON OUTPUT)
+          
