@@ -8,6 +8,10 @@ hava is a Go CLI tool to interact with app.hava.io platform.
 
 This tool is a CLI driven binary to interface with the Hava API/SaaS platform. This will allow practitioners to download a single binary that can be and used as part of CI/CD pipelines in tools like Github Actions, Gitlab CICD and Azure Devops, as well as part of local users commands or scripts.
 
+This tool utilises [Hava's Go SDK](https://pkg.go.dev/github.com/teamhava/hava-sdk-go) current avaialable endpoints and with ongoing develop will support more features available via the [Hava UI](https://app.hava.io/). 
+
+Check out our [current roadmap and drivers](./ROADMAP.md) for Hava CLI.
+
 - [hava CLI](#hava-cli)
   - [Overview](#overview)
   - [Installation](#installation)
