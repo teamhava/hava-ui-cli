@@ -2,4 +2,4 @@ FROM alpine
 RUN apk add --no-cache git bash openssh jq
 COPY hava /bin/
 WORKDIR /
-ENTRYPOINT ["/bin/hava"]
+CMD ["/bin/hava", "-v"]
