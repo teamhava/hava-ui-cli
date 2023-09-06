@@ -17,3 +17,8 @@ The following are sample CICD pipelines for various platforms. We recommend choo
 ## Gitlab CI
 
 - [Gitlab CI](./gitlab/.gitla-ci.yml) (Uses the docker image)
+
+
+## Circle CI
+
+- [Circle CI](./circleci/config.yml) (Uses the docker image)
