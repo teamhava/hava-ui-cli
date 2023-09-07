@@ -12,7 +12,7 @@ pipeline {
                                  string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY'),
                                  string(credentialsId: 'HAVA_AWS_SOURCE_NAME', variable: 'HAVA_AWS_SOURCE_NAME'),]) {
                     sh 'hava source list'
-                    sh '/hava source create aws --name $HAVA_AWS_SOURCE_NAME --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY'
+                    sh 'hava source create aws --name $HAVA_AWS_SOURCE_NAME --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY'
                     sh 'hava source list'
                 }
 
