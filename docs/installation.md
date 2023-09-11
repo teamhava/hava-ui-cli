@@ -40,7 +40,7 @@ Currently arch=["arm64, "x86_64"]
 
 ```sh
 docker pull hava/cli
-docker run --env HAVA_TOKEN hava/cli source list
+docker run --env HAVA_TOKEN hava/cli hava source list
 ```
 
 
