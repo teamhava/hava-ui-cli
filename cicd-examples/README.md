@@ -27,3 +27,8 @@ The following are sample CICD pipelines for various platforms. We recommend choo
 ## BuildKite
 
 - [BuildKite](./buildkite/pipeline.yml) (Uses the binary)
+
+
+## Jenkins
+
+- [Jenkins](./jenkins/Jenkinsfile) (Uses the docker image)
