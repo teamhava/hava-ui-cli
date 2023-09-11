@@ -2,6 +2,14 @@
 
 Binaries are created as part of a release, check out the [Release Page](https://github.com/teamhava/hava-ui-cli/releases) for the latest version.
 
+- [Installation](#installation)
+- [Pre-Requisites](#pre-requisites)
+  - [Environment Variable](#environment-variable)
+  - [Configuration File](#configuration-file)
+  - [Precedence](#precedence)
+  - [Running in Automation/CICD](#running-in-automationcicd)
+
+
 
 **MacOs Installation amd64 OR arm64**
 ```sh
@@ -76,7 +84,7 @@ hava --config <location-to-config-file> source list
 
 `hava` CLI will use the following precedence when determining which item to take
 
-- environmen variable
+- environment variable
 - config file
 - default
 
