@@ -1,4 +1,12 @@
 ## Usage
+- [Usage](#usage)
+  - [Print hava CLI help](#print-hava-cli-help)
+  - [Create and List Sources](#create-and-list-sources)
+  - [CLI JSON Output](#cli-json-output)
+  - [Sync Sources](#sync-sources)
+  - [Delete Sources](#delete-sources)
+  - [CLI Completion Setup](#cli-completion-setup)
+  - [CLI Interactive Config Setup](#cli-interactive-config-setup)
 
 ### Print hava CLI help
 
@@ -51,5 +59,7 @@ Use "hava [command] --help" for more information about a command.
 ![hava_cli_completion](./images/hava_cli_completion.cast.gif)
 
 ### CLI Interactive Config Setup
+
+The following will trigger when no `HAVA_TOKEN` found as an environment variable AND Config file found AND `AUTOMATION=1` is not set. 
 
 ![hava_config_setup](./images/hava_config_setup.cast.gif)

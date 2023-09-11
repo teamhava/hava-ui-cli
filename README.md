@@ -21,12 +21,12 @@ Check out our [current roadmap and drivers](./ROADMAP.md) for Hava CLI.
     - [Configuration File](#configuration-file)
     - [Precedence](#precedence)
     - [Running in Automation/CICD](#running-in-automationcicd)
-- [Source Commands](#source-commands)
-  - [Source List all](#source-list-all)
-  - [Source Create AWS (Using Access Keys)](#source-create-aws-using-access-keys)
   - [Output Formats](#output-formats)
     - [Table Output](#table-output)
     - [Json Output](#json-output)
+- [Source Commands](#source-commands)
+  - [Source List all](#source-list-all)
+  - [Source Create AWS (Using Access Keys)](#source-create-aws-using-access-keys)
 - [Build Local Binary](#build-local-binary)
   - [Testing Locally](#testing-locally)
 
@@ -112,6 +112,8 @@ The config file can also be specified by using the `--config <filename>` flag as
 hava --config <location-to-config-file> source list
 ```
 
+If no environment variable or config file found AND not running in automation, user will be met with an [interactive configuration file setup](./docs/usage.md#cli-interactive-config-setup). setup.
+
 ### Precedence
 
 `hava` CLI will use the following precedence when determining which variables to utilise:
@@ -126,7 +128,51 @@ When running `hava` CLI in automation or a CICD pipeline, we recommend export/se
 
 Some commands do require human inputs or can be bypassed with a flag (eg `--autoapprove`). 
 
-Checkout our [Github CLI Test workflow](./docs/cicd-examples/github/workflows/cli-test.yml) and other [CICD examples](./docs/cicd-examples/README.md) for other platforms like Gitlab-CI and Azure DevOps. 
+Checkout our [Github CLI Test workflow](./.github/workflows/cli-test.yml) and other [CICD examples](./docs/cicd-examples/README.md) for other platforms like [Gitlab-CI](./docs/cicd-examples/gitlab/.gitlab-ci.yml) and [Azure DevOps](./docs/cicd-examples/azuredevops/azure-pipelines.yml). 
+
+
+## Output Formats
+
+Table is the default format, however there are output formats of JSON (--json), CSV (--csv) ,  Markdown (--markdown) and HTML (--html)
+See [output formats for more information](./docs/outputs-format.md).
+
+### Table Output
+A table is the default format when outputting information about hava sources
+
+```bash
+hava source list                                                                                     
+╭───┬───────────────┬──────────────────────────────────────┬──────────────────────┬───────────────┬────────┬─────────────────────────────────────────╮ 
+│   │ DISPLAYNAME   │ ID                                   │ INFO                 │ NAME          │ STATE  │ TYPE                                    │
+├───┼───────────────┼──────────────────────────────────────┼──────────────────────┼───────────────┼────────┼─────────────────────────────────────────┤
+│ 1 │ dev           │ 4f14c115-3b0d-40ea-b075-6df9b2fb81c9 │ AKIAIOSFODNN7EXAMPLE │ dev           │ active │ Sources::AWS::Keys                      │
+│ 2 │ GCPDevChange3 │ f2a26440-10bf-43d1-9742-8361de30590f │ credentials.json     │ GCPDevChange3 │ active │ Sources::GCP::ServiceAccountCredentials │
+╰───┴───────────────┴──────────────────────────────────────┴──────────────────────┴───────────────┴────────┴─────────────────────────────────────────╯
+```
+
+### Json Output
+
+
+```bash
+hava source list --json | jq 
+[
+  {
+    "DisplayName": "dev",
+    "Id": "4f14c115-3b0d-40ea-b075-6df9b2fb81c9",
+    "Info": "AKIAIOSFODNN7EXAMPLE",
+    "Name": "dev",
+    "State": "active",
+    "Type": "Sources::AWS::Keys"
+  },
+  {
+    "DisplayName": "GCPDevChange3",
+    "Id": "f2a26440-10bf-43d1-9742-8361de30590f",
+    "Info": "credentials.json",
+    "Name": "GCPDevChange3",
+    "State": "active",
+    "Type": "Sources::GCP::ServiceAccountCredentials"
+  }
+]
+```
 
 # Source Commands
 
@@ -181,48 +227,6 @@ Flags:
 More [`hava source` commands found here](./docs/source_cmds.md).
 
 
-## Output Formats
-
-Table is the default format, however there are output formats of JSON (--json), CSV (--csv) ,  Markdown (--markdown) and HTML (--html)
-See [output formats for more information](./docs/outputs-format.md).
-
-### Table Output
-A table is the default format when outputting information about hava sources
-
-```bash
-hava source list                                                                                     
-╭───┬───────────────┬──────────────────────────────────────┬──────────────────────┬───────────────┬────────┬─────────────────────────────────────────╮ 
-│   │ DISPLAYNAME   │ ID                                   │ INFO                 │ NAME          │ STATE  │ TYPE                                    │
-├───┼───────────────┼──────────────────────────────────────┼──────────────────────┼───────────────┼────────┼─────────────────────────────────────────┤
-│ 1 │ dev           │ 4f14c115-3b0d-40ea-b075-6df9b2fb81c9 │ AKIAIOSFODNN7EXAMPLE │ dev           │ active │ Sources::AWS::Keys                      │
-│ 2 │ GCPDevChange3 │ f2a26440-10bf-43d1-9742-8361de30590f │ credentials.json     │ GCPDevChange3 │ active │ Sources::GCP::ServiceAccountCredentials │
-╰───┴───────────────┴──────────────────────────────────────┴──────────────────────┴───────────────┴────────┴─────────────────────────────────────────╯
-```
-
-### Json Output
-
-
-```bash
-hava source list --json | jq 
-[
-  {
-    "DisplayName": "dev",
-    "Id": "4f14c115-3b0d-40ea-b075-6df9b2fb81c9",
-    "Info": "AKIAIOSFODNN7EXAMPLE",
-    "Name": "dev",
-    "State": "active",
-    "Type": "Sources::AWS::Keys"
-  },
-  {
-    "DisplayName": "GCPDevChange3",
-    "Id": "f2a26440-10bf-43d1-9742-8361de30590f",
-    "Info": "credentials.json",
-    "Name": "GCPDevChange3",
-    "State": "active",
-    "Type": "Sources::GCP::ServiceAccountCredentials"
-  }
-]
-```
 
 # Build Local Binary
 `make local-build` will build a local binary 

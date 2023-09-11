@@ -1,5 +1,17 @@
 # Source Commands
 
+- [Source Commands](#source-commands)
+  - [Source List all](#source-list-all)
+  - [Source List SourceID](#source-list-sourceid)
+  - [Source Sync SourceID](#source-sync-sourceid)
+  - [Source Create AWS (Using Access Keys)](#source-create-aws-using-access-keys)
+  - [Source Create AWS (Using Cross Account Role)](#source-create-aws-using-cross-account-role)
+  - [Source Create GCP](#source-create-gcp)
+  - [Source Create Azure](#source-create-azure)
+  - [Source Delete](#source-delete)
+  - [Source Update AWS|AZURE|GCP](#source-update-awsazuregcp)
+
+
 `hava source -h`
 
 ```bash
@@ -94,6 +106,8 @@ Flags:
 ## Source Delete
 
 `hava source delete 22872411-20e8-4b6e-aa46-41866c9c1897`
+
+![hava_delete_sources](./images/hava_source_delete.cast.gif)
 
 
 ## Source Update AWS|AZURE|GCP

@@ -10,6 +10,12 @@ Ideally releasing should be done often with small increments when possible. Unle
 breaking change is blocking the release, or no fixes/features have been merged, a good
 target release cadence is between every 1 or 2 weeks.
 
+Our [release process](.github/workflows/release.yml) will create the following artifacts:
+- A signed Darwin Fat Binary (for Intel and ARM MAC devices)
+- Linux ARM & x86_64 binary
+- Windows ARM & x86_64 binary
+- Docker Container pushed to hava/cli
+
 
 ## Retracting a release
 

@@ -1,5 +1,11 @@
 ## Output Formats
 
+- [Output Formats](#output-formats)
+  - [Table Output](#table-output)
+  - [Json Output](#json-output)
+  - [CSV Output](#csv-output)
+  - [Markdown Output](#markdown-output)
+  - [HTML Output](#html-output)
 
 
 ### Table Output
