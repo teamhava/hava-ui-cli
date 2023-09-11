@@ -2,8 +2,6 @@
 hava is a Go CLI tool to interact with app.hava.io platform. 
 
 
-
-
 ## Overview
 
 This tool is a CLI driven binary to interface with the Hava API/SaaS platform. This will allow practitioners to download a single binary that can be and used as part of CI/CD pipelines in tools like Github Actions, Gitlab CICD and Azure Devops, as well as part of local users commands or scripts.
@@ -18,11 +16,6 @@ Check out our [current roadmap and drivers](./ROADMAP.md) for Hava CLI.
   - [Usage](#usage)
     - [Print hava CLI help](#print-hava-cli-help)
     - [Create and List Sources](#create-and-list-sources)
-    - [CLI JSON Output](#cli-json-output)
-    - [Sync Sources](#sync-sources)
-    - [Delete Sources](#delete-sources)
-    - [CLI Completion Setup](#cli-completion-setup)
-    - [CLI Interactive Config Setup](#cli-interactive-config-setup)
   - [Pre-Requisites](#pre-requisites)
     - [Environment Variable](#environment-variable)
     - [Configuration File](#configuration-file)
@@ -30,25 +23,31 @@ Check out our [current roadmap and drivers](./ROADMAP.md) for Hava CLI.
     - [Running in Automation/CICD](#running-in-automationcicd)
 - [Source Commands](#source-commands)
   - [Source List all](#source-list-all)
-  - [Source List SourceID](#source-list-sourceid)
-  - [Source Sync SourceID](#source-sync-sourceid)
   - [Source Create AWS (Using Access Keys)](#source-create-aws-using-access-keys)
-  - [Source Create AWS (Using Cross Account Role)](#source-create-aws-using-cross-account-role)
-  - [Source Create GCP](#source-create-gcp)
-  - [Source Create Azure](#source-create-azure)
-  - [Source Delete](#source-delete)
-  - [Source Update AWS|AZURE|GCP](#source-update-awsazuregcp)
   - [Output Formats](#output-formats)
     - [Table Output](#table-output)
     - [Json Output](#json-output)
-    - [CSV Output](#csv-output)
-    - [Markdown Output](#markdown-output)
 - [Build Local Binary](#build-local-binary)
   - [Testing Locally](#testing-locally)
 
 ## Installation
 
 Binaries are created as part of a release, check out the [Release Page](https://github.com/teamhava/hava-ui-cli/releases) for the latest version.
+
+**MacOs Installation Homebrew**
+```sh
+brew tap teamhava/hava
+brew install hava
+```
+
+
+**Linux Installation**
+```sh
+version="x.x.x"
+arch="arm64"
+curl -L -o hava.zip "https://github.com/teamhava/hava-ui-cli/releases/download/${version}/hava_Linux_${arch}.zip"
+unzip hava.zip
+```
 
 Specific [OS (Linux|OSX|Windows|Docker) installation here](./docs/installation.md). 
 
@@ -88,26 +87,7 @@ Use "hava [command] --help" for more information about a command.
 
 ![hava_create_list](./docs/images/hava_create_list_sources.cast.gif)
 
-### CLI JSON Output
-
-![hava_json_out](./docs/images/hava_CLI_json_output.cast.gif)
-
-
-### Sync Sources
-
-![hava_print_source](./docs/images/hava_source_sync.cast.gif)
-
-### Delete Sources
-
-![hava_delete_sources](./docs/images/hava_source_delete.cast.gif)
-
-### CLI Completion Setup
-
-![hava_cli_completion](./docs/images/hava_cli_completion.cast.gif)
-
-### CLI Interactive Config Setup
-
-![hava_config_setup](./docs/images/hava_config_setup.cast.gif)
+More [Usage examples](./docs/usage.md).
 
 ## Pre-Requisites
 
@@ -146,7 +126,7 @@ When running `hava` CLI in automation or a CICD pipeline, we recommend export/se
 
 Some commands do require human inputs or can be bypassed with a flag (eg `--autoapprove`). 
 
-Checkout our [Github CLI Test workflow](./.github/workflows/cli-test.yml) and other [CICD examples](./cicd-examples/README.md) for other platforms like Gitlab-CI and Azure DevOps. 
+Checkout our [Github CLI Test workflow](./docs/cicd-examples/github/workflows/cli-test.yml) and other [CICD examples](./docs/cicd-examples/README.md) for other platforms like Gitlab-CI and Azure DevOps. 
 
 # Source Commands
 
@@ -184,16 +164,6 @@ Flags:
 ╰───┴─────────────┴──────────────────────────────────────┴──────────────────────┴────────────┴────────┴────────────────────╯
 ```
 
-## Source List SourceID
-
-`hava source list --source-id a58b7cb1-f9da-42ad-9fc1-8dc61b0d3e38`
-
-
-## Source Sync SourceID
-
-`hava source sync a58b7cb1-f9da-42ad-9fc1-8dc61b0d3e38`
-
-
 ## Source Create AWS (Using Access Keys)
 
 `hava source create aws --name dev --access-key $AWS_ACCESS_KEY_ID --secret-key $AWS_SECRET_ACCESS_KEY`
@@ -208,52 +178,13 @@ Flags:
 ╰───┴─────────────┴──────────────────────────────────────┴──────────────────────┴────────────┴────────┴────────────────────╯
 ```
 
-## Source Create AWS (Using Cross Account Role)
-
-`hava source create aws --name devCAR --role-arn $AWS_CROSS_ACCOUNT_ROLE`
-
-```bash
-[INFO]   Created AWS Source for the following source:
-
-╭───┬─────────────┬──────────────────────────────────────┬────────────────────────────────────────┬────────┬────────┬────────────────────────────────╮
-│   │ DISPLAYNAME │ ID                                   │ INFO                                   │ NAME   │ STATE  │ TYPE                           │
-├───┼─────────────┼──────────────────────────────────────┼────────────────────────────────────────┼────────┼────────┼────────────────────────────────┤
-│ 1 │ devCAR      │ 31f9b6a6-4e48-400a-8ced-5bfc2a1aacc2 │ arn:aws:iam::123456789012:role/HavaCAR │ devCAR │ queued │ Sources::AWS::CrossAccountRole │
-╰───┴─────────────┴──────────────────────────────────────┴────────────────────────────────────────┴────────┴────────┴────────────────────────────────╯
-```
-
-## Source Create GCP
-
-`hava source create gcp  --name GCPDev --configFile $GCP_ENCODED_FILE`
-
-```bash
-[INFO]   Created GCP Source for the following source:
-
-╭───┬─────────────┬──────────────────────────────────────┬──────────────────┬────────┬────────┬─────────────────────────────────────────╮
-│   │ DISPLAYNAME │ ID                                   │ INFO             │ NAME   │ STATE  │ TYPE                                    │
-├───┼─────────────┼──────────────────────────────────────┼──────────────────┼────────┼────────┼─────────────────────────────────────────┤
-│ 1 │ GCPDev      │ 8818d864-46e9-4b8d-acdd-a31d8936e62f │ credentials.json │ GCPDev │ queued │ Sources::GCP::ServiceAccountCredentials │
-╰───┴─────────────┴──────────────────────────────────────┴──────────────────┴────────┴────────┴─────────────────────────────────────────╯
-```
-
-## Source Create Azure
-
-`hava create source azure --name AzureDev --client-id $ARM_CLIENT_ID --tenant-id $ARM_TENANT_ID --subscription-id $ARM_SUBSCRIPTION_ID`
-
-
-## Source Delete
-
-`hava source delete 22872411-20e8-4b6e-aa46-41866c9c1897`
-
-
-## Source Update AWS|AZURE|GCP
-
-`hava source update gcp --name GCPDevChange --source-id f2a26440-10bf-43d1-9742-8361de30590f`
-
-
+More [`hava source` commands found here](./docs/source_cmds.md).
 
 
 ## Output Formats
+
+Table is the default format, however there are output formats of JSON (--json), CSV (--csv) ,  Markdown (--markdown) and HTML (--html)
+See [output formats for more information](./docs/outputs-format.md).
 
 ### Table Output
 A table is the default format when outputting information about hava sources
@@ -293,28 +224,8 @@ hava source list --json | jq
 ]
 ```
 
-### CSV Output
-
-```bash
-hava source list --csv       
-,DisplayName,Id,Info,Name,State,Type
-1,dev,4f14c115-3b0d-40ea-b075-6df9b2fb81c9,AKIAIOSFODNN7EXAMPLE,dev,active,Sources::AWS::Keys
-2,GCPDevChange3,f2a26440-10bf-43d1-9742-8361de30590f,credentials.json,GCPDevChange3,active,Sources::GCP::ServiceAccountCredentials
-```
-
-
-### Markdown Output
-
-```bash
-hava source list --markdown
-| | DisplayName | Id | Info | Name | State | Type |
-| ---:| --- | --- | --- | --- | --- | --- |
-| 1 | dev | 4f14c115-3b0d-40ea-b075-6df9b2fb81c9 | AKIAIOSFODNN7EXAMPLE | dev | active | Sources::AWS::Keys |
-| 2 | GCPDevChange3 | f2a26440-10bf-43d1-9742-8361de30590f | credentials.json | GCPDevChange3 | active | Sources::GCP::ServiceAccountCredentials |
-```
-
 # Build Local Binary
-`make local-build`
+`make local-build` will build a local binary 
 
 
 ## Testing Locally
