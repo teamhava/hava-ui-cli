@@ -191,8 +191,8 @@ github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcU
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
 github.com/subosito/gotenv v1.4.2 h1:X1TuBLAMDFbaTAChgCBLu3DU3UPyELpnF2jjJ2cz/S8=
 github.com/subosito/gotenv v1.4.2/go.mod h1:ayKnFf/c6rvx/2iiLrJUk1e6plDbT3edrFNGqEflhK0=
-github.com/teamhava/hava-sdk-go v0.2.1 h1:vXwQ7gBQyET+5nKS1Eit0HQjpTyT8wJJXPGE/OtmeWg=
-github.com/teamhava/hava-sdk-go v0.2.1/go.mod h1:50UWT7y9OX0VeVOYpbwMfzKfi+OwqF7nM2ui5BiTy/o=
+github.com/teamhava/hava-sdk-go v1.1.3 h1:E4ti89Bk9yJR+KN8dCTMYgnVWSWTLmK68npTrsroyJY=
+github.com/teamhava/hava-sdk-go v1.1.3/go.mod h1:50UWT7y9OX0VeVOYpbwMfzKfi+OwqF7nM2ui5BiTy/o=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
