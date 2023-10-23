@@ -88,6 +88,12 @@ func sourceCreateAzure(api *havaclient.APIClient, sourceName string, sourceType 
 
 	o.AddInfoMessage("Created Azure Source for the following source:\n")
 	o.AddTableHeaders("DisplayName", "Id", "Info", "Name", "State", "Type")
-	o.AddTableRows(*source.DisplayName, *source.Id, *source.Info, *source.Name, *source.State, *source.Type)
+	o.AddTableRows(
+		SafeDeref(source.DisplayName), 
+		SafeDeref(source.Id), 
+		SafeDeref(source.Info), 
+		SafeDeref(source.Name), 
+		SafeDeref(source.State), 
+		SafeDeref(source.Type))
 
 }

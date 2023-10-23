@@ -43,7 +43,13 @@ func showSourceId(api *havaclient.APIClient, sourceId string) {
 	}
 
 	o.AddTableHeaders("DisplayName", "Id", "Info", "Name", "State", "Type")
-	o.AddTableRows(*source.DisplayName, *source.Id, *source.Info, *source.Name, *source.State, *source.Type)
+	o.AddTableRows(
+		SafeDeref(source.DisplayName), 
+		SafeDeref(source.Id),
+		SafeDeref(source.Info), 
+		SafeDeref(source.Name), 
+		SafeDeref(source.State), 
+		SafeDeref(source.Type))
 
 }
 
@@ -66,13 +72,20 @@ func showSources(api *havaclient.APIClient) {
 
 	//Length of Results
 
-	if len(source.Results) > 0 {
+	numResults := len(source.Results)
+
+	if numResults > 0 {
 
 		o.AddTableHeaders("DisplayName", "Id", "Info", "Name", "State", "Type")
 		// Loop through results
-		for i := 0; i < len(source.Results); i++ {
-
-			o.AddTableRows(*source.Results[i].DisplayName, *source.Results[i].Id, *source.Results[i].Info, *source.Results[i].Name, *source.Results[i].State, *source.Results[i].Type)
+		for i := 0; i < numResults; i++ {
+			o.AddTableRows(
+				SafeDeref(source.Results[i].DisplayName), 
+				SafeDeref(source.Results[i].Id), 
+				SafeDeref(source.Results[i].Info), 
+				SafeDeref(source.Results[i].Name), 
+				SafeDeref(source.Results[i].State), 
+				SafeDeref(source.Results[i].Type))
 		}
 
 	} else {
