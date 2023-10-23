@@ -27,3 +27,6 @@ go.work
 hava
 hava-ui-cli
 dist/
+
+# system files
+.DS_Store

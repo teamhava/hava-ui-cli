@@ -87,8 +87,13 @@ func sourceCreateAwsKey(api *havaclient.APIClient, sourceName string, awsType st
 
 	o.AddInfoMessage("Created AWS Source for the following source:\n")
 	o.AddTableHeaders("DisplayName", "Id", "Info", "Name", "State", "Type")
-	o.AddTableRows(*source.DisplayName, *source.Id, *source.Info, *source.Name, *source.State, *source.Type)
-
+	o.AddTableRows(
+		SafeDeref(source.DisplayName), 
+		SafeDeref(source.Id), 
+		SafeDeref(source.Info), 
+		SafeDeref(source.Name), 
+		SafeDeref(source.State), 
+		SafeDeref(source.Type))
 }
 
 func sourceCreateAwsCar(api *havaclient.APIClient, sourceName string, awsType string, roleArn string, externalID string) {
@@ -121,6 +126,12 @@ func sourceCreateAwsCar(api *havaclient.APIClient, sourceName string, awsType st
 
 	o.AddInfoMessage("Created AWS Source for the following source:\n")
 	o.AddTableHeaders("DisplayName", "Id", "Info", "Name", "State", "Type")
-	o.AddTableRows(*source.DisplayName, *source.Id, *source.Info, *source.Name, *source.State, *source.Type)
+	o.AddTableRows(
+		SafeDeref(source.DisplayName), 
+		SafeDeref(source.Id), 
+		SafeDeref(source.Info), 
+		SafeDeref(source.Name), 
+		SafeDeref(source.State), 
+		SafeDeref(source.Type))
 
 }
