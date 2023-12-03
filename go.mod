@@ -7,7 +7,7 @@ require (
 	github.com/logrusorgru/aurora v2.0.3+incompatible
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
-	github.com/teamhava/hava-sdk-go v0.2.1
+	github.com/teamhava/hava-sdk-go v1.1.3
 	golang.org/x/term v0.15.0
 )
 
