@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/jedib0t/go-pretty/v6 v6.4.9
 	github.com/logrusorgru/aurora v2.0.3+incompatible
-	github.com/spf13/cobra v1.7.0
+	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.16.0
 	github.com/teamhava/hava-sdk-go v1.1.3
 	golang.org/x/term v0.15.0
