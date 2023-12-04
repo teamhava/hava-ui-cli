@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.1.2 - 2023-12-04
+
+### Changelog
+
+* 4bf3b0d Bump docker/login-action from 2 to 3
+* 2c3c0e7 Bump docker/setup-qemu-action from 2 to 3
+* fa58a50 Bump github.com/jedib0t/go-pretty/v6 from 6.4.7 to 6.4.9
+* 26965e4 Bump github.com/teamhava/hava-sdk-go from 0.2.1 to 1.1.3
+* 77d1af4 Bump golang.org/x/term from 0.12.0 to 0.15.0
+* 9f1be5a Bump goreleaser/goreleaser-action from 4 to 5
+* fc1e77c Bump stefanzweifel/git-auto-commit-action from 4 to 5
+* 15762ad Merge branch 'main' into dependabot/go_modules/github.com/teamhava/hava-sdk-go-1.1.3
+* 249215c Merge pull request #15 from teamhava/dependabot/github_actions/goreleaser/goreleaser-action-5
+* 6e53f2b Merge pull request #16 from teamhava/dependabot/github_actions/docker/setup-qemu-action-3
+* 20bf9dc Merge pull request #17 from teamhava/dependabot/github_actions/docker/login-action-3
+* 9d0cc30 Merge pull request #21 from teamhava/dependabot/github_actions/stefanzweifel/git-auto-commit-action-5
+* c95b338 Merge pull request #23 from teamhava/dependabot/go_modules/github.com/teamhava/hava-sdk-go-1.1.3
+* 2e3a54a Merge pull request #24 from teamhava/dependabot/go_modules/github.com/jedib0t/go-pretty/v6-6.4.9
+* e3a836e Merge pull request #27 from teamhava/dependabot/go_modules/golang.org/x/term-0.15.0
+
 ## 0.0.26-beta - 2023-09-05
 
 ### Changelog
