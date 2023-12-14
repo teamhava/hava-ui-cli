@@ -58,7 +58,7 @@ jobs:
         run: ./pkg/linux_amd64/hava --version
         
       # Package all binaries together
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: hava-artifacts
           path: ./pkg/*     
